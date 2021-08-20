@@ -6,7 +6,7 @@ from stable_baselines3.common.vec_env import VecMonitor, VecTransposeImage, VecN
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.callbacks import EvalCallback
 from stable_baselines3.common.preprocessing import is_image_space, is_image_space_channels_first
-import flocking_env
+import fle.flocking_env as flocking_env
 
 num = sys.argv[1]
 n_evaluations = 20

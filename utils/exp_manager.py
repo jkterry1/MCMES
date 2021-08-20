@@ -38,7 +38,7 @@ from utils.callbacks import SaveVecNormalizeCallback, TrialEvalCallback
 from utils.hyperparams_opt import HYPERPARAMS_SAMPLER
 from utils.utils import ALGOS, get_callback_list, get_latest_run_id, get_wrapper_class, linear_schedule
 
-import flocking_env
+import fle.flocking_env as flocking_env
 import supersuit as ss
 
 
