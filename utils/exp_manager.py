@@ -38,7 +38,7 @@ from utils.callbacks import SaveVecNormalizeCallback, TrialEvalCallback
 from utils.hyperparams_opt import HYPERPARAMS_SAMPLER
 from utils.utils import ALGOS, get_callback_list, get_latest_run_id, get_wrapper_class, linear_schedule
 
-from pettingzoo.butterfly import pistonball_v4
+import flocking_env
 import supersuit as ss
 
 
@@ -480,13 +480,21 @@ class ExperimentManager(object):
         return env
 
     def create_envs(self, n_envs: int, eval_env: bool = False, no_log: bool = False) -> VecEnv:
+        n_agents = 9
+        total_energy_j = 46000
+        total_distance_m = 870
+        hz = 500
+        crash_reward = -10
+        nerve_impulse_hz = 200
+        reaction_frames = 0
+        distance_reward_per_m = 100 / total_distance_m
+        energy_reward_per_j = -10 / total_energy_j
+        skip_frames = int(hz / nerve_impulse_hz)
 
-        env = pistonball_v4.parallel_env(ball_mass=3.75)
-        env = ss.color_reduction_v0(env, mode='B')
-        env = ss.resize_v0(env, x_size=84, y_size=84, linear_interp=True)
-        env = ss.frame_stack_v1(env, 3)
+        env = flocking_env.parallel_env(N=n_agents, h=1 / hz, energy_reward=energy_reward_per_j, forward_reward=distance_reward_per_m, crash_reward=crash_reward, LIA=True)
+        env = ss.delay_observations_v0(env, reaction_frames)
+        env = ss.frame_skip_v0(env, skip_frames)
         env = ss.pettingzoo_env_to_vec_env_v0(env)
-        print(n_envs)
         env = ss.concat_vec_envs_v0(env, n_envs, num_cpus=4, base_class='stable_baselines3')
         env = VecMonitor(env)
 
@@ -582,7 +590,7 @@ class ExperimentManager(object):
 
         optuna_eval_freq = int(self.n_timesteps / self.n_evaluations)
         # Account for parallel envs
-        optuna_eval_freq = max(optuna_eval_freq // (20 * 4), 1)
+        optuna_eval_freq = max(optuna_eval_freq // (9 * 4), 1)
         # Use non-deterministic eval for Atari
         path = None
         if self.optimization_log_path is not None:
@@ -598,7 +606,6 @@ class ExperimentManager(object):
         )
 
         try:
-            print('learning')
             model.learn(self.n_timesteps, callback=eval_callback)
             # Free memory
             model.env.close()

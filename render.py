@@ -10,7 +10,6 @@ import os
 import sys
 from array2gif import write_gif
 
-os.environ["SDL_VIDEODRIVER"] = "dummy"
 num = sys.argv[1]
 
 

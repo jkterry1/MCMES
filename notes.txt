@@ -1,4 +1,4 @@
-pistonball24
+flocking1
 
 ./run_optimize.sh [name] # run on each to get parameters in DB
 
@@ -10,21 +10,14 @@ pistonball24
 
 
 
-Todo:
-Fix rendering logic
-
 
 For new runs:
 Change DB name
 Change mature saving treshhold
-Change env in evaluation, rendering and training files
+Change env in evaluation, rendering and optimization files
 Change neural networks (bird flocking)
 Change number of steps
-
-Weekly match: top left, with table on left and other shit on right. Only left thing scrolls
-
-
-Leaderboard: 2x4 page of top 8 games that show you the match against player 1 and 2 of that game last week as gifs and link to specific leaderboard pages
+Fix render for bird flocking
 
 
 
