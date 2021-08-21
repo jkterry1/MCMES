@@ -48,7 +48,7 @@ eval_freq = int(n_timesteps / n_evaluations)
 eval_freq = max(eval_freq // (n_envs * n_agents), 1)
 
 all_mean_rewards = []
-for i in range(10):
+for i in range(3):
     model = PPO("CnnPolicy", env, verbose=3, **params)
     eval_callback = EvalCallback(eval_env, best_model_save_path='./eval_logs/' + num + '/', log_path='./eval_logs/' + num + '/' , eval_freq=eval_freq, deterministic=True, render=False)
     model.learn(total_timesteps=n_timesteps, callback=eval_callback) 
