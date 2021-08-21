@@ -30,8 +30,14 @@ with open('./hyperparameter_jsons/' + 'hyperparameters_' + num + ".json") as f:
 
 print(params)
 
-params['net_arch'] = {"small": [dict(pi=[64, 64], vf=[64, 64])],"medium": [dict(pi=[256, 256], vf=[256, 256])]}[params['net_arch']]
-params['activation_fn'] = {"tanh": nn.Tanh, "relu": nn.ReLU, "elu": nn.ELU, "leaky_relu": nn.LeakyReLU}[params['activation_fn']]
+net_arch = {"small": [dict(pi=[64, 64], vf=[64, 64])],"medium": [dict(pi=[256, 256], vf=[256, 256])]}[params['net_arch']]
+activation_fn = {"tanh": nn.Tanh, "relu": nn.ReLU, "elu": nn.ELU, "leaky_relu": nn.LeakyReLU}[params['activation_fn']]
+ortho_init = False
+
+params["policy_kwargs"] = dict(net_arch=net_arch, activation_fn=activation_fn, ortho_init=ortho_init)
+
+del params['net_arch']
+del params['activation_fn']
 
 env = flocking_env.parallel_env(N=n_agents, h=1 / hz, energy_reward=energy_reward_per_j, forward_reward=distance_reward_per_m, crash_reward=crash_reward, LIA=True)
 env = ss.delay_observations_v0(env, reaction_frames)
