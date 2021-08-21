@@ -7,6 +7,7 @@ from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.callbacks import EvalCallback
 from stable_baselines3.common.preprocessing import is_image_space, is_image_space_channels_first
 import fle.flocking_env as flocking_env
+from torch import nn as nn
 
 num = sys.argv[1]
 n_evaluations = 20
@@ -29,6 +30,8 @@ with open('./hyperparameter_jsons/' + 'hyperparameters_' + num + ".json") as f:
 
 print(params)
 
+params['net_arch'] = {"small": [dict(pi=[64, 64], vf=[64, 64])],"medium": [dict(pi=[256, 256], vf=[256, 256])]}[params['net_arch']]
+params['activation_fn'] = {"tanh": nn.Tanh, "relu": nn.ReLU, "elu": nn.ELU, "leaky_relu": nn.LeakyReLU}[params['activation_fn']]
 
 env = flocking_env.parallel_env(N=n_agents, h=1 / hz, energy_reward=energy_reward_per_j, forward_reward=distance_reward_per_m, crash_reward=crash_reward, LIA=True)
 env = ss.delay_observations_v0(env, reaction_frames)
@@ -46,6 +49,7 @@ eval_env = VecMonitor(eval_env)
 
 eval_freq = int(n_timesteps / n_evaluations)
 eval_freq = max(eval_freq // (n_envs * n_agents), 1)
+
 
 all_mean_rewards = []
 for i in range(3):
