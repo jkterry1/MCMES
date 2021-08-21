@@ -9,41 +9,46 @@ import numpy as np
 import os
 import sys
 from array2gif import write_gif
+import fle.flocking_env as flocking_env
+
 
 num = sys.argv[1]
 
+num = sys.argv[1]
+n_evaluations = 20
+n_agents = 9
+n_envs = 4
+total_energy_j = 46000
+total_distance_m = 870
+hz = 500
+crash_reward = -10
+episodes = 300
+nerve_impulse_hz = 200
+reaction_frames = 0
+n_timesteps = hz * 60 * n_agents * episodes
+distance_reward_per_m = 100 / total_distance_m
+energy_reward_per_j = -10 / total_energy_j
+skip_frames = int(hz / nerve_impulse_hz)
 
-# def image_transpose(env):
-#     if is_image_space(env.observation_space) and not is_image_space_channels_first(env.observation_space):
-#         env = VecTransposeImage(env)
-#     return env
 
-
-env = pistonball_v4.env(ball_mass=3.75)
-env = ss.color_reduction_v0(env, mode='B')
-env = ss.resize_v0(env, x_size=84, y_size=84)
-env = ss.frame_stack_v1(env, 3)
+render_env = flocking_env.env(N=n_agents, h=1/hz, energy_reward=energy_reward_per_j, forward_reward=distance_reward_per_m, crash_reward=crash_reward, LIA=True)
+render_env = ss.delay_observations_v0(render_env, reaction_frames)
+render_env = ss.frame_skip_v0(render_env, skip_frames)
 
 policies = os.listdir('./mature_policies/' + str(num) + '/')
 
 for policy in policies:
     model = PPO.load('./mature_policies/' + str(num) + '/' + policy)
 
-    obs_list = []
     i = 0
-    env.reset()
+    render_env.reset()
 
     while True:
-        for agent in env.agent_iter():
-            observation, _, done, _ = env.last()
+        for agent in render_env.agent_iter():
+            observation, _, done, _ = render_env.last()
             action = model.predict(observation, deterministic=True)[0] if not done else None
+            render_env.step(action)
 
-            env.step(action)
-            i += 1
-            if i % (len(env.possible_agents) + 1) == 0:
-                obs_list.append(np.transpose(env.render(mode='rgb_array'), axes=(1, 0, 2)))
-        env.close()
+        render_env.unwrapped.log_vortices('./mature_simulations/' + num + "_" + policy.split('.')[0] + 'vortices' + '.csv')
+        render_env.unwrapped.log_birds('./mature_simulations/' + num + "_" + policy.split('.')[0] + 'birds' + '.csv')
         break
-
-    print('writing gif')
-    write_gif(obs_list, "./mature_gifs/" + num + "_" + policy.split('.')[0] + '.gif', fps=15)
