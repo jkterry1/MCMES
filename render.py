@@ -49,6 +49,7 @@ for policy in policies:
             action = model.predict(observation, deterministic=True)[0] if not done else None
             render_env.step(action)
 
-        render_env.unwrapped.log_vortices('./mature_simulations/' + num + "_" + policy.split('.')[0] + 'vortices' + '.csv')
-        render_env.unwrapped.log_birds('./mature_simulations/' + num + "_" + policy.split('.')[0] + 'birds' + '.csv')
+        print('./mature_simulations/' + num + '_' + policy.split('.')[0] + 'vortices' + '.csv')
+        render_env.unwrapped.log_vortices('./mature_simulations/' + num + '_' + policy.split('.')[0] + 'vortices' + '.csv')
+        render_env.unwrapped.log_birds('./mature_simulations/' + num + '_' + policy.split('.')[0] + 'birds' + '.csv')
         break
