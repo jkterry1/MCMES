@@ -38,7 +38,7 @@ render_env = ss.frame_skip_v0(render_env, skip_frames)
 policies = os.listdir('./mature_policies/' + str(num) + '/')
 
 for policy in policies:
-    print('loading new policy')
+    print('Loading new policy')
     model = PPO.load('./mature_policies/' + str(num) + '/' + policy)
 
     i = 0
@@ -50,6 +50,7 @@ for policy in policies:
             action = model.predict(observation, deterministic=True)[0] if not done else None
             render_env.step(action)
 
+        print('Saving logs')
         render_env.unwrapped.log_vortices('./mature_simulations/' + num + '_' + policy.split('.')[0] + '_vortices' + '.csv')
         render_env.unwrapped.log_birds('./mature_simulations/' + num + '_' + policy.split('.')[0] + '_birds' + '.csv')
         break
