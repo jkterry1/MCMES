@@ -50,7 +50,8 @@ for policy in policies:
             action = model.predict(observation, deterministic=True)[0] if not done else None
             render_env.step(action)
 
-        print('Saving logs')
+        print('Saving vortex logs')
         render_env.unwrapped.log_vortices('./mature_simulations/' + num + '_' + policy.split('.')[0] + '_vortices' + '.csv')
+        print('Saving bird logs')
         render_env.unwrapped.log_birds('./mature_simulations/' + num + '_' + policy.split('.')[0] + '_birds' + '.csv')
         break
