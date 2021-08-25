@@ -38,6 +38,7 @@ render_env = ss.frame_skip_v0(render_env, skip_frames)
 policies = os.listdir('./mature_policies/' + str(num) + '/')
 
 for policy in policies:
+    print('loading new policy')
     model = PPO.load('./mature_policies/' + str(num) + '/' + policy)
 
     i = 0
