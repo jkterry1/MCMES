@@ -3,11 +3,15 @@ import json
 import numpy as np
 import argparse
 
+
 def value_key(a):
+    print(a)
     if a is None:
+
         return float('-inf')
     else:
         return a.value
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--study-name", help="Study name used during hyperparameter optimization", type=str, default=None)
@@ -19,7 +23,7 @@ args = parser.parse_args()
 study = optuna.create_study(study_name=args.study_name, storage=args.storage, load_if_exists=True, direction="maximize")
 values = []
 trials = study.trials
-trials.sort(key = value_key, reverse=True)
+trials.sort(key=value_key, reverse=True)
 
 for i in trials:
     if len(values) < args.print_n_best_trials:
