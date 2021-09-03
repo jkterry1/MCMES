@@ -6,8 +6,7 @@ import argparse
 
 def value_key(a):
     print(a)
-    if a is None:
-
+    if a.value is None:
         return float('-inf')
     else:
         return a.value
