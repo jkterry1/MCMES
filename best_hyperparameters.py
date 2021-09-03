@@ -4,7 +4,10 @@ import numpy as np
 import argparse
 
 def value_key(a):
-    return a.value
+    if a is None:
+        return float('-inf')
+    else:
+        return a.value
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--study-name", help="Study name used during hyperparameter optimization", type=str, default=None)
