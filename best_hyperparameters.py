@@ -3,6 +3,8 @@ import json
 import numpy as np
 import argparse
 
+def value_key(a):
+    return a.value
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--study-name", help="Study name used during hyperparameter optimization", type=str, default=None)
@@ -12,10 +14,12 @@ parser.add_argument("--save-n-best-hyperparameters", help="Save the hyperparamet
 args = parser.parse_args()
 
 study = optuna.create_study(study_name=args.study_name, storage=args.storage, load_if_exists=True, direction="maximize")
-
 values = []
-for i in study.trials:
-    if i.number < args.print_n_best_trials:
+trials = study.trials
+trials.sort(key = value_key, reverse=True)
+
+for i in trials:
+    if len(values) < args.print_n_best_trials:
         print(i.value)
     values.append(i.value)
 
