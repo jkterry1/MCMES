@@ -28,11 +28,8 @@ for i in trials:
         print(i.value)
     values.append(i.value)
 
-scratch_values = [-np.inf if i is None else i for i in values]
-ordered_indices = np.argsort(scratch_values)[::-1]
-
 for i in range(args.save_n_best_hyperparameters):
-    params = study.trials[ordered_indices[i]].params
+    params = trials[i].params
     text = json.dumps(params)
     jsonFile = open('hyperparameter_jsons/' + 'hyperparameters_' + str(i) + ".json", "w+")
     jsonFile.write(text)
