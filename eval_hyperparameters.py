@@ -74,4 +74,7 @@ for i in range(10):
     except:
         print("error")
 
-print(sum(all_mean_rewards) / len(all_mean_rewards))
+if len(all_mean_rewards) > 0:
+    print(sum(all_mean_rewards) / len(all_mean_rewards))
+else:
+    print("No mature policies found")
