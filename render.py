@@ -31,15 +31,22 @@ energy_reward_per_j = -10 / total_energy_j
 skip_frames = int(hz / nerve_impulse_hz)
 
 
-render_env = flocking_env.env(N=n_agents, h=1/hz, energy_reward=energy_reward_per_j, forward_reward=distance_reward_per_m, crash_reward=crash_reward, LIA=True)
+render_env = flocking_env.env(
+    N=n_agents,
+    h=1 / hz,
+    energy_reward=energy_reward_per_j,
+    forward_reward=distance_reward_per_m,
+    crash_reward=crash_reward,
+    LIA=True,
+)
 render_env = ss.delay_observations_v0(render_env, reaction_frames)
 render_env = ss.frame_skip_v0(render_env, skip_frames)
 
-policies = os.listdir('./mature_policies/' + str(num) + '/')
+policies = os.listdir("./mature_policies/" + str(num) + "/")
 
 for policy in policies:
-    print('Loading new policy')
-    model = PPO.load('./mature_policies/' + str(num) + '/' + policy)
+    print("Loading new policy")
+    model = PPO.load("./mature_policies/" + str(num) + "/" + policy)
 
     i = 0
     render_env.reset()
@@ -50,8 +57,8 @@ for policy in policies:
             action = model.predict(observation, deterministic=True)[0] if not done else None
             render_env.step(action)
 
-        print('Saving vortex logs')
-        render_env.unwrapped.log_vortices('./mature_simulations/' + num + '_' + policy.split('.')[0] + '_vortices' + '.csv')
-        print('Saving bird logs')
-        render_env.unwrapped.log_birds('./mature_simulations/' + num + '_' + policy.split('.')[0] + '_birds' + '.csv')
+        print("Saving vortex logs")
+        render_env.unwrapped.log_vortices("./mature_simulations/" + num + "_" + policy.split(".")[0] + "_vortices" + ".csv")
+        print("Saving bird logs")
+        render_env.unwrapped.log_birds("./mature_simulations/" + num + "_" + policy.split(".")[0] + "_birds" + ".csv")
         break
