@@ -54,13 +54,16 @@ for policy in policies:
     i = 0
     render_env.reset()
 
+    reward = 0
     while True:
         for agent in render_env.agent_iter():
-            observation, _, done, _ = render_env.last()
+            observation, _, done, reward = render_env.last()
             action = model.predict(observation, deterministic=True)[0] if not done else None
+            reward += reward
             print(action)
             render_env.step(action)
 
+        reward = reward / 9
         print("Saving vortex logs")
         render_env.unwrapped.log_vortices("./results/" + policy +"_vortices" + ".csv")
         print("Saving bird logs")
