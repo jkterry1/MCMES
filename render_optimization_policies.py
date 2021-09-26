@@ -1,5 +1,6 @@
 import os
 import sys
+from os.path import exists
 
 import fle.flocking_env as flocking_env
 import numpy as np
@@ -12,7 +13,8 @@ from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.preprocessing import is_image_space, is_image_space_channels_first
 from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecTransposeImage
 
-num = sys.argv[1]
+#num = sys.argv[1]
+
 n_evaluations = 20
 n_agents = 9
 n_envs = 4
@@ -43,17 +45,24 @@ render_env = ss.frame_skip_v0(render_env, skip_frames)
 policies = os.listdir("./optimization_policies/")
 
 for policy in policies:
-    print("Loading new policy ", "./optimization_policies/" + policy + "/best_model")
-    model = PPO.load("./optimization_policies/" + policy + "/best_model")
-    print("model loaded")
+    filepath = "./optimization_policies/" + policy + "/best_model"
+    if not exists(filepath + '.zip'):
+        continue
+    print("Loading new policy ", filepath)
+    model = PPO.load(filepath)
+
+    i = 0
     render_env.reset()
+
     while True:
         for agent in render_env.agent_iter():
             observation, _, done, _ = render_env.last()
             action = model.predict(observation, deterministic=True)[0] if not done else None
+            print(action)
             render_env.step(action)
+
         print("Saving vortex logs")
-        render_env.unwrapped.log_vortices("./optimization_policies/" + policy + "_vortices" + ".csv")
+        render_env.unwrapped.log_vortices("./results/" + policy +"_vortices" + ".csv")
         print("Saving bird logs")
-        render_env.unwrapped.log_birds("./optimization_policies/" + policy + "_birds" + ".csv")
+        render_env.unwrapped.log_birds("./results/" + policy + "_birds" + ".csv")
         break
