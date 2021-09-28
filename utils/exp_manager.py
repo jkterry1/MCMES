@@ -64,7 +64,7 @@ from utils.utils import (
     linear_schedule,
 )
 
-from pettingzoo.butterfly import pistonball_v4
+from pettingzoo.sisl import pursuit_v3
 import supersuit as ss
 
 
@@ -541,9 +541,9 @@ class ExperimentManager(object):
         self, n_envs: int, eval_env: bool = False, no_log: bool = False
     ) -> VecEnv:
 
-        env = pistonball_v4.parallel_env(ball_mass=3.75)
-        env = ss.color_reduction_v0(env, mode="B")
-        env = ss.resize_v0(env, x_size=84, y_size=84, linear_interp=True)
+        env = pursuit_v3.parallel_env()
+        env = ss.flatten_v0(env)
+        env = ss.normalize_obs_v0(env)
         env = ss.frame_stack_v1(env, 3)
         env = ss.pettingzoo_env_to_vec_env_v0(env)
         print(n_envs)

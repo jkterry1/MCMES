@@ -21,6 +21,12 @@ Change env in evaluation, rendering and training files
 Change neural networks (bird flocking)
 Change number of steps
 
+
+n steps
+neural networks
+mature threshold
+Change n agents and related parameters
+
 Weekly match: top left, with table on left and other shit on right. Only left thing scrolls
 
 

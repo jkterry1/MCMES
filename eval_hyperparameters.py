@@ -1,7 +1,7 @@
 import sys
 import json
 from stable_baselines3 import PPO
-from pettingzoo.butterfly import pistonball_v4
+from pettingzoo.sisl import pursuit_v3
 import supersuit as ss
 from stable_baselines3.common.vec_env import VecMonitor, VecTransposeImage, VecNormalize
 from stable_baselines3.common.evaluation import evaluate_policy
@@ -13,9 +13,9 @@ from stable_baselines3.common.preprocessing import (
 
 num = sys.argv[1]
 n_evaluations = 20
-n_agents = 20
+n_agents = 8
 n_envs = 4
-n_timesteps = 2000000
+n_timesteps = 4000000
 
 with open("./hyperparameter_jsons/" + "hyperparameters_" + num + ".json") as f:
     params = json.load(f)
@@ -31,18 +31,18 @@ def image_transpose(env):
     return env
 
 
-env = pistonball_v4.parallel_env(ball_mass=3.75)
-env = ss.color_reduction_v0(env, mode="B")
-env = ss.resize_v0(env, x_size=84, y_size=84)
+env = pursuit_v3.parallel_env()
+env = ss.flatten_v0(env)
+env = ss.normalize_obs_v0(env)
 env = ss.frame_stack_v1(env, 3)
 env = ss.pettingzoo_env_to_vec_env_v0(env)
 env = ss.concat_vec_envs_v0(env, n_envs, num_cpus=1, base_class="stable_baselines3")
 env = VecMonitor(env)
 env = image_transpose(env)
 
-eval_env = pistonball_v4.parallel_env(ball_mass=3.75)
-eval_env = ss.color_reduction_v0(eval_env, mode="B")
-eval_env = ss.resize_v0(eval_env, x_size=84, y_size=84)
+eval_env = pursuit_v3.parallel_env()
+eval_env = ss.flatten_v0(eval_env)
+eval_env = ss.normalize_obs_v0(eval_env)
 eval_env = ss.frame_stack_v1(eval_env, 3)
 eval_env = ss.pettingzoo_env_to_vec_env_v0(eval_env)
 eval_env = ss.concat_vec_envs_v0(

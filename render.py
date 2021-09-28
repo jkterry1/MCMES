@@ -1,5 +1,5 @@
 from stable_baselines3 import PPO
-from pettingzoo.butterfly import pistonball_v4
+from pettingzoo.sisl import pursuit_v3
 import supersuit as ss
 from stable_baselines3.common.vec_env import VecMonitor, VecTransposeImage, VecNormalize
 from stable_baselines3.common.evaluation import evaluate_policy
@@ -23,9 +23,9 @@ num = sys.argv[1]
 #     return env
 
 
-env = pistonball_v4.env(ball_mass=3.75)
-env = ss.color_reduction_v0(env, mode="B")
-env = ss.resize_v0(env, x_size=84, y_size=84)
+env = pursuit_v3.env()
+env = ss.flatten_v0(env)
+env = ss.normalize_obs_v0(env)
 env = ss.frame_stack_v1(env, 3)
 
 policies = os.listdir("./mature_policies/" + str(num) + "/")
