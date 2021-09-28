@@ -10,6 +10,7 @@ from stable_baselines3.common.preprocessing import (
     is_image_space,
     is_image_space_channels_first,
 )
+from torch import nn as nn
 
 num = sys.argv[1]
 n_evaluations = 20
@@ -21,6 +22,15 @@ with open("./hyperparameter_jsons/" + "hyperparameters_" + num + ".json") as f:
     params = json.load(f)
 
 print(params)
+
+net_arch = {"small": [dict(pi=[64, 64], vf=[64, 64])], "medium": [dict(pi=[256, 256], vf=[256, 256])]}[params["net_arch"]]
+activation_fn = {"tanh": nn.Tanh, "relu": nn.ReLU, "elu": nn.ELU, "leaky_relu": nn.LeakyReLU}[params["activation_fn"]]
+ortho_init = False
+
+params["policy_kwargs"] = dict(net_arch=net_arch, activation_fn=activation_fn, ortho_init=ortho_init)
+
+del params["net_arch"]
+del params["activation_fn"]
 
 
 def image_transpose(env):
@@ -57,7 +67,7 @@ eval_freq = max(eval_freq // (n_envs * n_agents), 1)
 all_mean_rewards = []
 for i in range(10):
     try:
-        model = PPO("CnnPolicy", env, verbose=3, **params)
+        model = PPO("MlpPolicy", env, verbose=3, **params)
         eval_callback = EvalCallback(
             eval_env,
             best_model_save_path="./eval_logs/" + num + "/",

@@ -17,8 +17,8 @@ Change env in evaluation, rendering and training files
 Change neural networks (bird flocking)
 Change number of steps
 
-Change to MLP
-Search neural networks and add loading logic
+
+
 
 Future:
 Pick mature threshold based on performance
