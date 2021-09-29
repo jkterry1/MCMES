@@ -23,7 +23,8 @@ with open("./hyperparameter_jsons/" + "hyperparameters_" + num + ".json") as f:
 
 print(params)
 
-net_arch = {"small": [dict(pi=[64, 64], vf=[64, 64])], "medium": [dict(pi=[256, 256], vf=[256, 256])]}[params["net_arch"]]
+
+net_arch = {"small": [dict(pi=[64, 64], vf=[64, 64])], "medium": [dict(pi=[256, 256], vf=[256, 256])], "large": [dict(pi=[400, 300], vf=[400, 300])], "extra_large": [dict(pi=[750, 750], vf=[750, 750])]}[params["net_arch"]]
 activation_fn = {"tanh": nn.Tanh, "relu": nn.ReLU, "elu": nn.ELU, "leaky_relu": nn.LeakyReLU}[params["activation_fn"]]
 ortho_init = False
 
