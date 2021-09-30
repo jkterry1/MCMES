@@ -1,5 +1,5 @@
 from stable_baselines3 import PPO
-from pettingzoo.sisl import pursuit_v3
+from pettingzoo.sisl import multiwalker_v7
 import supersuit as ss
 from stable_baselines3.common.vec_env import VecMonitor, VecTransposeImage, VecNormalize
 from stable_baselines3.common.evaluation import evaluate_policy
@@ -23,8 +23,7 @@ num = sys.argv[1]
 #     return env
 
 
-env = pursuit_v3.env()
-env = ss.flatten_v0(env)
+env = multiwalker_v7.env()
 env = ss.normalize_obs_v0(env)
 env = ss.frame_stack_v1(env, 3)
 

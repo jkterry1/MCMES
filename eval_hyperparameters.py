@@ -1,7 +1,7 @@
 import sys
 import json
 from stable_baselines3 import PPO
-from pettingzoo.sisl import pursuit_v3
+from pettingzoo.sisl import multiwalker_v7
 import supersuit as ss
 from stable_baselines3.common.vec_env import VecMonitor, VecTransposeImage, VecNormalize
 from stable_baselines3.common.evaluation import evaluate_policy
@@ -14,9 +14,9 @@ from torch import nn as nn
 
 num = sys.argv[1]
 n_evaluations = 20
-n_agents = 8
+n_agents = 3
 n_envs = 4
-n_timesteps = 4000000
+n_timesteps = 8000000
 
 with open("./hyperparameter_jsons/" + "hyperparameters_" + num + ".json") as f:
     params = json.load(f)
@@ -42,7 +42,7 @@ def image_transpose(env):
     return env
 
 
-env = pursuit_v3.parallel_env()
+env = multiwalker_v7.parallel_env()
 env = ss.flatten_v0(env)
 env = ss.normalize_obs_v0(env)
 env = ss.frame_stack_v1(env, 3)
@@ -51,7 +51,7 @@ env = ss.concat_vec_envs_v0(env, n_envs, num_cpus=1, base_class="stable_baseline
 env = VecMonitor(env)
 env = image_transpose(env)
 
-eval_env = pursuit_v3.parallel_env()
+eval_env = multiwalker_v7.parallel_env()
 eval_env = ss.flatten_v0(eval_env)
 eval_env = ss.normalize_obs_v0(eval_env)
 eval_env = ss.frame_stack_v1(eval_env, 3)

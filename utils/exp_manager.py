@@ -64,7 +64,7 @@ from utils.utils import (
     linear_schedule,
 )
 
-from pettingzoo.sisl import pursuit_v3
+from pettingzoo.sisl import multiwalker_v7
 import supersuit as ss
 
 
@@ -541,7 +541,7 @@ class ExperimentManager(object):
         self, n_envs: int, eval_env: bool = False, no_log: bool = False
     ) -> VecEnv:
 
-        env = pursuit_v3.parallel_env()
+        env = multiwalker_v7.parallel_env()
         env = ss.flatten_v0(env)
         env = ss.normalize_obs_v0(env)
         env = ss.frame_stack_v1(env, 3)
@@ -663,7 +663,7 @@ class ExperimentManager(object):
 
         optuna_eval_freq = int(self.n_timesteps / self.n_evaluations)
         # Account for parallel envs
-        optuna_eval_freq = max(optuna_eval_freq // (20 * 9), 1)
+        optuna_eval_freq = max(optuna_eval_freq // (20 * 3), 1)
         # Use non-deterministic eval for Atari
         path = None
         if self.optimization_log_path is not None:
