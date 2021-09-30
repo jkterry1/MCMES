@@ -43,7 +43,6 @@ def image_transpose(env):
 
 
 env = multiwalker_v7.parallel_env()
-env = ss.flatten_v0(env)
 env = ss.normalize_obs_v0(env)
 env = ss.frame_stack_v1(env, 3)
 env = ss.pettingzoo_env_to_vec_env_v0(env)
@@ -52,7 +51,6 @@ env = VecMonitor(env)
 env = image_transpose(env)
 
 eval_env = multiwalker_v7.parallel_env()
-eval_env = ss.flatten_v0(eval_env)
 eval_env = ss.normalize_obs_v0(eval_env)
 eval_env = ss.frame_stack_v1(eval_env, 3)
 eval_env = ss.pettingzoo_env_to_vec_env_v0(eval_env)
