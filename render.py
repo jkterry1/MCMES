@@ -24,7 +24,6 @@ num = sys.argv[1]
 
 
 env = multiwalker_v7.env()
-env = ss.normalize_obs_v0(env)
 env = ss.frame_stack_v1(env, 3)
 
 policies = os.listdir("./mature_policies/" + str(num) + "/")
