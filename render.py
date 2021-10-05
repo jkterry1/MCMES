@@ -50,10 +50,12 @@ for policy in policies:
                 obs_list.append(
                     np.transpose(env.render(mode="rgb_array"), axes=(1, 0, 2))
                 )
-        env.close()
+
         break
 
     print("writing gif")
     write_gif(
         obs_list, "./mature_gifs/" + num + "_" + policy.split(".")[0] + ".gif", fps=5
     )
+
+env.close()
