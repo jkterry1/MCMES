@@ -1,17 +1,8 @@
 import os
-import sys
 from os.path import exists
-
 import fle.flocking_env as flocking_env
-import numpy as np
 import supersuit as ss
-from array2gif import write_gif
-from pettingzoo.butterfly import pistonball_v4
 from stable_baselines3 import PPO
-from stable_baselines3.common.callbacks import EvalCallback
-from stable_baselines3.common.evaluation import evaluate_policy
-from stable_baselines3.common.preprocessing import is_image_space, is_image_space_channels_first
-from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecTransposeImage
 
 #num = sys.argv[1]
 
@@ -65,7 +56,7 @@ for policy in policies:
 
         reward = reward / 9
         print("Saving vortex logs")
-        render_env.unwrapped.log_vortices("./results/" + policy +"_vortices" + ".csv")
+        render_env.unwrapped.log_vortices("./optimization_policy_logs/" + policy +"_vortices" + ".csv")
         print("Saving bird logs")
-        render_env.unwrapped.log_birds("./results/" + policy + "_birds" + ".csv")
+        render_env.unwrapped.log_birds("./optimization_policy_logs/" + policy + "_birds" + ".csv")
         break
