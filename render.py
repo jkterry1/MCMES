@@ -13,7 +13,9 @@ import os
 import sys
 from array2gif import write_gif
 
-os.environ["SDL_VIDEODRIVER"] = "dummy"
+import pyglet
+
+#pyglet.options['headless'] = True
 num = sys.argv[1]
 
 
