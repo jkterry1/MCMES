@@ -13,7 +13,7 @@ import os
 import sys
 from array2gif import write_gif
 
-import pyglet
+#import pyglet
 
 #pyglet.options['headless'] = True
 num = sys.argv[1]
