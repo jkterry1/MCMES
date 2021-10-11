@@ -8,6 +8,7 @@ from pprint import pprint
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
 import fle.flocking_env as flocking_env
+import magent
 import gym
 import numpy as np
 import optuna
