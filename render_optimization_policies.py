@@ -56,7 +56,7 @@ for policy in policies:
     rewards = {agent:0 for agent in render_env.agents}
 
     for agent in render_env.agent_iter():
-        observation, reward, done, _ = render_menv.last()
+        observation, reward, done, _ = render_env.last()
         rewards[agent]+=reward
         action = model.predict(observation, deterministic=True)[0] if not done else None
         act_str = "Agent: " + str(agent) + "\t Action: " + str(action)+"\n"
