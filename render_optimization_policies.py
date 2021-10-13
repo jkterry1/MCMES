@@ -1,8 +1,15 @@
 import os
+import sys
 from os.path import exists
+
 import fle.flocking_env as flocking_env
+import numpy as np
 import supersuit as ss
 from stable_baselines3 import PPO
+from stable_baselines3.common.callbacks import EvalCallback
+from stable_baselines3.common.evaluation import evaluate_policy
+from stable_baselines3.common.preprocessing import is_image_space, is_image_space_channels_first
+from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecTransposeImage
 
 #num = sys.argv[1]
 
@@ -37,26 +44,31 @@ policies = os.listdir("./optimization_policies/")
 
 for policy in policies:
     filepath = "./optimization_policies/" + policy + "/best_model"
-    if not exists(filepath + '.zip'):
+    if not exists(filepath+'.zip'):
         continue
     print("Loading new policy ", filepath)
     model = PPO.load(filepath)
 
     i = 0
     render_env.reset()
+    act_filename = "./results/" + policy + "_actions" + ".txt"
+    act_file = open(act_filename, "w")
+    rewards = {agent:0 for agent in render_env.agents}
 
-    reward = 0
-    while True:
-        for agent in render_env.agent_iter():
-            observation, _, done, reward = render_env.last()
-            action = model.predict(observation, deterministic=True)[0] if not done else None
-            reward += reward
-            print(action)
-            render_env.step(action)
+    for agent in render_env.agent_iter():
+        observation, reward, done, _ = render_menv.last()
+        rewards[agent]+=reward
+        action = model.predict(observation, deterministic=True)[0] if not done else None
+        act_str = "Agent: " + str(agent) + "\t Action: " + str(action)+"\n"
+        act_file.write(act_str)
+        render_env.step(action)
 
-        reward = reward / 9
-        print("Saving vortex logs")
-        render_env.unwrapped.log_vortices("./optimization_policy_logs/" + policy +"_vortices" + ".csv")
-        print("Saving bird logs")
-        render_env.unwrapped.log_birds("./optimization_policy_logs/" + policy + "_birds" + ".csv")
-        break
+    avg_rew = 0
+    for agent in rewards:
+        avg_rew += rewards[agent]/n_agents
+    #print("Saving vortex logs")
+    #render_env.unwrapped.log_vortices("./results/" + policy +"_vortices" + ".csv")
+    print("Saving bird logs: ./results/" + policy + "_" +
+                                    str(avg_rew) + "_birds" + ".csv")
+    render_env.unwrapped.log_birds("./results/" + policy + "_" +
+                                    str(avg_rew) + "_birds" + ".csv")
