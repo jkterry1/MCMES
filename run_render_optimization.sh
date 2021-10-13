@@ -1,4 +1,4 @@
-mkdir -p ./optimization_policy_logs
-rm -rf optimization_policy_logs/*
+mkdir -p ./results
+rm -rf results/*
 
-python3 render_optimization_policies.py
+python3 results.py
