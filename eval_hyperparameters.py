@@ -78,14 +78,14 @@ for i in range(10):
         model = PPO("MlpPolicy", env, verbose=3, **params)
         eval_callback = EvalCallback(
             eval_env,
-            best_model_save_path="./eval_logs/" + num + "/",
-            log_path="./eval_logs/" + num + "/",
+            best_model_save_path="./eval_logs/" + num + "/" + str(i) + "/",
+            log_path="./eval_logs/" + num + "/" + str(i) + "/",
             eval_freq=eval_freq,
             deterministic=True,
             render=False,
         )
         model.learn(total_timesteps=n_timesteps, callback=eval_callback)
-        model = PPO.load("./eval_logs/" + num + "/" + "best_model")
+        model = PPO.load("./eval_logs/" + num + "/" + str(i) + "/" + "best_model")
         mean_reward, std_reward = evaluate_policy(model, eval_env, deterministic=True, n_eval_episodes=25)
         print(mean_reward)
         print(std_reward)
