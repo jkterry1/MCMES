@@ -18,7 +18,7 @@ total_energy_j = 46000
 total_distance_m = 870
 hz = 500
 crash_reward = -10
-episodes = 300
+episodes = 2000
 nerve_impulse_hz = 200
 reaction_frames = 0
 n_timesteps = hz * 60 * n_agents * episodes
@@ -90,7 +90,7 @@ for i in range(10):
         print(mean_reward)
         print(std_reward)
         all_mean_rewards.append(mean_reward)
-        if mean_reward > 70:
+        if mean_reward > 50:
             model.save("./mature_policies/" + str(num) + "/" + str(i) + "_" + str(mean_reward).split(".")[0] + ".zip")
     except:
         print("error")
