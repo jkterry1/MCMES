@@ -10,7 +10,7 @@ from stable_baselines3.common.preprocessing import is_image_space, is_image_spac
 from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecTransposeImage
 from torch import nn as nn
 
-num = sys.argv[1]
+
 n_evaluations = 20
 n_agents = 9
 n_envs = 4
