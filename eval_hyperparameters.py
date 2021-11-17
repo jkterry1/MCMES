@@ -16,7 +16,7 @@ num = sys.argv[1]
 n_evaluations = 20
 n_agents = 3
 n_envs = 4
-n_timesteps = 50000000
+n_timesteps = 15000000
 
 with open("./hyperparameter_jsons/" + "hyperparameters_" + num + ".json") as f:
     params = json.load(f)
@@ -45,15 +45,15 @@ def image_transpose(env):
 
 env = multiwalker_v7.parallel_env()
 env = ss.frame_stack_v1(env, 3)
-env = ss.pettingzoo_env_to_vec_env_v0(env)
-env = ss.concat_vec_envs_v0(env, n_envs, num_cpus=1, base_class="stable_baselines3")
+env = ss.pettingzoo_env_to_vec_env_v1(env)
+env = ss.concat_vec_envs_v1(env, n_envs, num_cpus=1, base_class="stable_baselines3")
 env = VecMonitor(env)
 env = image_transpose(env)
 
 eval_env = multiwalker_v7.parallel_env()
 eval_env = ss.frame_stack_v1(eval_env, 3)
-eval_env = ss.pettingzoo_env_to_vec_env_v0(eval_env)
-eval_env = ss.concat_vec_envs_v0(
+eval_env = ss.pettingzoo_env_to_vec_env_v1(eval_env)
+eval_env = ss.concat_vec_envs_v1(
     eval_env, 1, num_cpus=1, base_class="stable_baselines3"
 )
 eval_env = VecMonitor(eval_env)
