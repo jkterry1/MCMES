@@ -45,7 +45,7 @@ def image_transpose(env):
 env = pursuit_v3.parallel_env()
 env = ss.flatten_v0(env)
 env = ss.pettingzoo_env_to_vec_env_v1(env)
-env = ss.concat_vec_envs_v0(env, n_envs, num_cpus=1, base_class="stable_baselines3")
+env = ss.concat_vec_envs_v1(env, n_envs, num_cpus=1, base_class="stable_baselines3")
 env = VecMonitor(env)
 env = image_transpose(env)
 

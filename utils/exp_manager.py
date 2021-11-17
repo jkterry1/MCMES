@@ -544,7 +544,7 @@ class ExperimentManager(object):
         env = pursuit_v3.parallel_env()
         env = ss.flatten_v0(env)
         env = ss.pettingzoo_env_to_vec_env_v1(env)
-        env = ss.concat_vec_envs_v0(
+        env = ss.concat_vec_envs_v1(
             env, n_envs, num_cpus=4, base_class="stable_baselines3"
         )
         env = VecMonitor(env)
