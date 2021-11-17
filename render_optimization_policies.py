@@ -8,8 +8,6 @@ from stable_baselines3 import PPO
 
 env = pursuit_v3.env()
 env = ss.flatten_v0(env)
-env = ss.normalize_obs_v0(env)
-env = ss.frame_stack_v1(env, 3)
 
 n_agents = 8
 
