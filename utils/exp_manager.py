@@ -488,12 +488,15 @@ class ExperimentManager(object):
 
     def create_envs(self, n_envs: int, eval_env: bool = False, no_log: bool = False) -> VecEnv:
         n_agents = 9
-        total_energy_j = 46000
+        total_energy_j = 23698
         total_distance_m = 870
         hz = 500
         crash_reward = -10
+        episodes = 300
         nerve_impulse_hz = 200
         reaction_frames = 0
+        time = 10
+        n_timesteps = hz * time * n_agents * episodes
         distance_reward_per_m = 100 / total_distance_m
         energy_reward_per_j = -10 / total_energy_j
         skip_frames = int(hz / nerve_impulse_hz)
