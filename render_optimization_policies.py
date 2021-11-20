@@ -29,7 +29,6 @@ for policy in policies:
         for agent in env.agent_iter():
             observation, reward, done, _ = env.last()
             action = (model.predict(observation, deterministic=True)[0] if not done else None)
-            print(reward)
             reward += reward
 
             env.step(action)
