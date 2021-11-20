@@ -29,9 +29,8 @@ for policy in policies:
         for agent in env.agent_iter():
             observation, _, done, reward = env.last()
             action = (model.predict(observation, deterministic=True)[0] if not done else None)
+            print(reward)
             reward += reward
-
-            reward = reward / n_agents
 
             env.step(action)
             i += 1
@@ -42,6 +41,7 @@ for policy in policies:
 
         break
 
+    reward = reward / n_agents
     print("writing gif")
     write_gif(
         obs_list, "./optimization_gifs/" + policy + "_" + "reward" + ".gif", fps=5
