@@ -11,6 +11,7 @@ from stable_baselines3.common.preprocessing import (
     is_image_space_channels_first,
 )
 from torch import nn as nn
+import sumo_rl
 
 num = sys.argv[1]
 n_evaluations = 20
@@ -43,19 +44,19 @@ def image_transpose(env):
     return env
 
 
-env = multiwalker_v7.parallel_env()
-env = ss.frame_stack_v1(env, 3)
+env = sumo_rl.ingolstadt7()
+env = ss.pad_observations_v0(env)
+env = ss.pad_action_space_v0(env)
 env = ss.pettingzoo_env_to_vec_env_v1(env)
 env = ss.concat_vec_envs_v1(env, n_envs, num_cpus=1, base_class="stable_baselines3")
 env = VecMonitor(env)
 env = image_transpose(env)
 
-eval_env = multiwalker_v7.parallel_env()
-eval_env = ss.frame_stack_v1(eval_env, 3)
+eval_env = sumo_rl.ingolstadt7()
+eval_env = ss.pad_observations_v0(eval_env)
+eval_env = ss.pad_action_space_v0(eval_env)
 eval_env = ss.pettingzoo_env_to_vec_env_v1(eval_env)
-eval_env = ss.concat_vec_envs_v1(
-    eval_env, 1, num_cpus=1, base_class="stable_baselines3"
-)
+eval_env = ss.concat_vec_envs_v1(eval_env, 1, num_cpus=1, base_class="stable_baselines3")
 eval_env = VecMonitor(eval_env)
 eval_env = image_transpose(eval_env)
 

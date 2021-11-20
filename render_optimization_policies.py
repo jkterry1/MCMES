@@ -5,9 +5,11 @@ import supersuit as ss
 from array2gif import write_gif
 from pettingzoo.sisl import multiwalker_v7
 from stable_baselines3 import PPO
+import sumo_rl
 
-env = multiwalker_v7.env()
-env = ss.frame_stack_v1(env, 3)
+env = sumo_rl.ingolstadt7()
+env = ss.pad_observations_v0(env)
+env = ss.pad_action_space_v0(env)
 
 n_agents = 8
 

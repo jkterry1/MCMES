@@ -64,7 +64,7 @@ from utils.utils import (
     linear_schedule,
 )
 
-from pettingzoo.sisl import multiwalker_v7
+import sumo_rl
 import supersuit as ss
 
 
@@ -541,13 +541,11 @@ class ExperimentManager(object):
         self, n_envs: int, eval_env: bool = False, no_log: bool = False
     ) -> VecEnv:
 
-        env = multiwalker_v7.parallel_env()
-        env = ss.frame_stack_v1(env, 3)
+        env = sumo_rl.ingolstadt7()
+        env = ss.pad_observations_v0(env)
+        env = ss.pad_action_space_v0(env)
         env = ss.pettingzoo_env_to_vec_env_v1(env)
-        print(n_envs)
-        env = ss.concat_vec_envs_v1(
-            env, n_envs, num_cpus=4, base_class="stable_baselines3"
-        )
+        env = ss.concat_vec_envs_v1(env, n_envs, num_cpus=4, base_class="stable_baselines3")
         env = VecMonitor(env)
 
         env = self._maybe_normalize(env, eval_env)
