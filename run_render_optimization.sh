@@ -1,4 +1,4 @@
 mkdir -p ./optimization_gifs
 rm -rf optimization_gifs/*
 
-python3 render_optimization_policies.py
+python3 nohup render_optimization_policies.py &> render_optimization_log.out &

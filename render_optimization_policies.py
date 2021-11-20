@@ -25,24 +25,27 @@ for policy in policies:
     env.reset()
     reward = 0
 
-    while True:
-        for agent in env.agent_iter():
-            observation, _, done, reward = env.last()
-            action = (model.predict(observation, deterministic=True)[0] if not done else None)
-            reward += reward
+    try:
+        while True:
+            for agent in env.agent_iter():
+                observation, _, done, reward = env.last()
+                action = (model.predict(observation, deterministic=True)[0] if not done else None)
+                reward += reward
 
-            reward = reward / n_agents
+                reward = reward / n_agents
 
-            env.step(action)
-            i += 1
-            if i % (len(env.possible_agents) + 1) == 0:
-                obs_list.append(
-                    np.transpose(env.render(mode="rgb_array"), axes=(1, 0, 2))
-                )
+                env.step(action)
+                i += 1
+                if i % (len(env.possible_agents) + 1) == 0:
+                    obs_list.append(
+                        np.transpose(env.render(mode="rgb_array"), axes=(1, 0, 2))
+                    )
 
-        break
+            break
 
-    print("writing gif")
-    write_gif(
-        obs_list, "./optimization_gifs/" + policy + "_" + "reward" + ".gif", fps=5
-    )
+        print("writing gif")
+        write_gif(
+            obs_list, "./optimization_gifs/" + policy + "_" + "reward" + ".gif", fps=5
+        )
+    except:
+        print("error")
