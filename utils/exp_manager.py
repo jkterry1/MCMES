@@ -66,6 +66,7 @@ from utils.utils import (
 
 from pettingzoo.sisl import pursuit_v4
 import supersuit as ss
+import magent
 
 
 class ExperimentManager(object):
