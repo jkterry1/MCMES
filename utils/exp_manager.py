@@ -64,7 +64,7 @@ from utils.utils import (
     linear_schedule,
 )
 
-from pettingzoo.sisl import pursuit_v3
+from pettingzoo.sisl import pursuit_v4
 import supersuit as ss
 
 
@@ -541,7 +541,7 @@ class ExperimentManager(object):
         self, n_envs: int, eval_env: bool = False, no_log: bool = False
     ) -> VecEnv:
 
-        env = pursuit_v3.parallel_env()
+        env = pursuit_v4.parallel_env()
         env = ss.flatten_v0(env)
         env = ss.pettingzoo_env_to_vec_env_v1(env)
         env = ss.concat_vec_envs_v1(

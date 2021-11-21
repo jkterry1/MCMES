@@ -1,5 +1,5 @@
 from stable_baselines3 import PPO
-from pettingzoo.sisl import pursuit_v3
+from pettingzoo.sisl import pursuit_v4
 import supersuit as ss
 from stable_baselines3.common.vec_env import VecMonitor, VecTransposeImage, VecNormalize
 from stable_baselines3.common.evaluation import evaluate_policy
@@ -23,7 +23,7 @@ num = sys.argv[1]
 #     return env
 
 
-env = pursuit_v3.env()
+env = pursuit_v4.env()
 env = ss.flatten_v0(env)
 
 policies = os.listdir("./mature_policies/" + str(num) + "/")

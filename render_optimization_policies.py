@@ -3,10 +3,10 @@ from os.path import exists
 import numpy as np
 import supersuit as ss
 from array2gif import write_gif
-from pettingzoo.sisl import pursuit_v3
+from pettingzoo.sisl import pursuit_v4
 from stable_baselines3 import PPO
 
-env = pursuit_v3.env()
+env = pursuit_v4.env()
 env = ss.flatten_v0(env)
 
 n_agents = 8

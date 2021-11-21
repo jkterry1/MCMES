@@ -1,7 +1,7 @@
 import sys
 import json
 from stable_baselines3 import PPO
-from pettingzoo.sisl import pursuit_v3
+from pettingzoo.sisl import pursuit_v4
 import supersuit as ss
 from stable_baselines3.common.vec_env import VecMonitor, VecTransposeImage, VecNormalize
 from stable_baselines3.common.evaluation import evaluate_policy
@@ -42,14 +42,14 @@ def image_transpose(env):
     return env
 
 
-env = pursuit_v3.parallel_env()
+env = pursuit_v4.parallel_env()
 env = ss.flatten_v0(env)
 env = ss.pettingzoo_env_to_vec_env_v1(env)
 env = ss.concat_vec_envs_v1(env, n_envs, num_cpus=1, base_class="stable_baselines3")
 env = VecMonitor(env)
 env = image_transpose(env)
 
-eval_env = pursuit_v3.parallel_env()
+eval_env = pursuit_v4.parallel_env()
 eval_env = ss.flatten_v0(eval_env)
 eval_env = ss.normalize_obs_v0(eval_env)
 eval_env = ss.frame_stack_v1(eval_env, 3)
