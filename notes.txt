@@ -1,4 +1,4 @@
-pursuit1
+ssd
 
 ./run_optimize.sh [name] # run on each to get parameters in DB
 

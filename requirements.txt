@@ -1,8 +1,6 @@
 PettingZoo
 supersuit
-git+https://github.com/DLR-RM/stable-baselines3.git@master
-pygame==2.0.0
-pymunk==6.0.0
+stable-baselines3
 array2gif
 scikit-optimize
 optuna
