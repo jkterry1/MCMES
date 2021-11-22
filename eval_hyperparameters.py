@@ -18,7 +18,7 @@ n_evaluations = 20
 n_agents = 5
 n_cpus = 4
 n_envs = 8
-n_timesteps = 5e8
+n_timesteps = 1e7
 env_name = "harvest"
 
 with open("./hyperparameter_jsons/" + "hyperparameters_" + num + ".json") as f:
