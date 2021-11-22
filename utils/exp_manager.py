@@ -10,11 +10,13 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 import gym
 import numpy as np
 import optuna
+import supersuit as ss
 import yaml
 from optuna.integration.skopt import SkoptSampler
 from optuna.pruners import BasePruner, MedianPruner, SuccessiveHalvingPruner
 from optuna.samplers import BaseSampler, RandomSampler, TPESampler
 from optuna.visualization import plot_optimization_history, plot_param_importances
+from social_dilemmas.envs import pettingzoo_env
 
 # For using HER with GoalEnv
 from stable_baselines3 import HerReplayBuffer  # noqa: F401
@@ -24,9 +26,6 @@ from stable_baselines3.common.callbacks import (
     CheckpointCallback,
     EvalCallback,
 )
-from stable_baselines3.common.env_util import make_vec_env
-from stable_baselines3.common.monitor import Monitor
-
 from stable_baselines3.common.noise import (
     NormalActionNoise,
     OrnsteinUhlenbeckActionNoise,
@@ -44,9 +43,9 @@ from stable_baselines3.common.vec_env import (
     SubprocVecEnv,
     VecEnv,
     VecFrameStack,
+    VecMonitor,
     VecNormalize,
     VecTransposeImage,
-    VecMonitor,
 )
 
 # For custom activation fn
@@ -63,9 +62,6 @@ from utils.utils import (
     get_wrapper_class,
     linear_schedule,
 )
-
-from pettingzoo.butterfly import pistonball_v4
-import supersuit as ss
 
 
 class ExperimentManager(object):
@@ -540,26 +536,21 @@ class ExperimentManager(object):
     def create_envs(
         self, n_envs: int, eval_env: bool = False, no_log: bool = False
     ) -> VecEnv:
-
-        env = pistonball_v4.parallel_env()
-        env = ss.color_reduction_v0(env, mode="B")
-        env = ss.resize_v0(env, x_size=84, y_size=84, linear_interp=True)
-        env = ss.frame_stack_v1(env, 3)
-        env = ss.pettingzoo_env_to_vec_env_v0(env)
-        print(n_envs)
-        env = ss.concat_vec_envs_v0(
+    
+        env_name = "harvest"
+        n_agents = 5
+        num_frames = 4 # Should be a hyperparameter
+        env = pettingzoo_env.parallel_env(
+            env=env_name,
+            num_agents=n_agents,
+        )
+        env = ss.observation_lambda_v0(env, lambda x, _: x["curr_obs"], lambda s: s["curr_obs"])
+        env = ss.frame_stack_v1(env, num_frames)
+        env = ss.pettingzoo_env_to_vec_env_v1(env)
+        env = ss.concat_vec_envs_v1(
             env, n_envs, num_cpus=4, base_class="stable_baselines3"
         )
         env = VecMonitor(env)
-
-        env = self._maybe_normalize(env, eval_env)
-
-        if is_image_space(env.observation_space) and not is_image_space_channels_first(
-            env.observation_space
-        ):
-            if self.verbose > 0:
-                print("Wrapping into a VecTransposeImage")
-            env = VecTransposeImage(env)
 
         return env
 
@@ -663,7 +654,7 @@ class ExperimentManager(object):
 
         optuna_eval_freq = int(self.n_timesteps / self.n_evaluations)
         # Account for parallel envs
-        optuna_eval_freq = max(optuna_eval_freq // (20 * 4), 1)
+        optuna_eval_freq = max(optuna_eval_freq // (20 * 9), 1)
         # Use non-deterministic eval for Atari
         path = None
         if self.optimization_log_path is not None:
