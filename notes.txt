@@ -1,4 +1,4 @@
-kaz1
+cooperativepong1
 
 ./run_optimize.sh [name] # run on each to get parameters in DB
 

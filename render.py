@@ -1,5 +1,5 @@
 from stable_baselines3 import PPO
-from pettingzoo.butterfly import knights_archers_zombies_v7
+from pettingzoo.butterfly import cooperative_pong_v3
 import supersuit as ss
 from stable_baselines3.common.vec_env import VecMonitor, VecTransposeImage, VecNormalize
 from stable_baselines3.common.evaluation import evaluate_policy
@@ -23,12 +23,23 @@ num = sys.argv[1]
 #     return env
 
 
-env = knights_archers_zombies_v7.env()
+env = cooperative_pong_v3.parallel_env()
+player1 = env.possible_agents[0]
+
+
+def invert_agent_indication(obs, agent):
+    if len(obs.shape) == 2:
+        obs = obs.reshape(obs.shape + (1,))
+    obs2 = obs if agent == player1 else 255 - obs
+    return np.concatenate([obs, obs2], axis=2)
+
+
+env = cooperative_pong_v3.env()
 env = ss.color_reduction_v0(env, mode="B")
 env = ss.resize_v0(env, x_size=84, y_size=84)
-env = ss.pad_action_space_v0(env)
+env = ss.observation_lambda_v0(env, invert_agent_indication)
 env = ss.frame_stack_v1(env, 3)
-env = ss.black_death_v2(env)
+
 
 policies = os.listdir("./mature_policies/" + str(num) + "/")
 

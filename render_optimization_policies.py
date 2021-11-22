@@ -3,18 +3,28 @@ from os.path import exists
 import numpy as np
 import supersuit as ss
 from array2gif import write_gif
-from pettingzoo.butterfly import knights_archers_zombies_v7
+from pettingzoo.butterfly import cooperative_pong_v3
 from stable_baselines3 import PPO
 
 n_agents = 20
 n_envs = 4
 
-env = knights_archers_zombies_v7.env()
+env = cooperative_pong_v3.parallel_env()
+player1 = env.possible_agents[0]
+
+
+def invert_agent_indication(obs, agent):
+    if len(obs.shape) == 2:
+        obs = obs.reshape(obs.shape + (1,))
+    obs2 = obs if agent == player1 else 255 - obs
+    return np.concatenate([obs, obs2], axis=2)
+
+
+env = cooperative_pong_v3.env()
 env = ss.color_reduction_v0(env, mode="B")
 env = ss.resize_v0(env, x_size=84, y_size=84)
-env = ss.pad_action_space_v0(env)
+env = ss.observation_lambda_v0(env, invert_agent_indication)
 env = ss.frame_stack_v1(env, 3)
-env = ss.black_death_v2(env)
 env = ss.pettingzoo_env_to_vec_env_v0(env)
 env = ss.concat_vec_envs_v0(env, n_envs, num_cpus=1, base_class="stable_baselines3")
 
