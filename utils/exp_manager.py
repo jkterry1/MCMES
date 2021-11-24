@@ -551,6 +551,7 @@ class ExperimentManager(object):
             env, n_envs, num_cpus=4, base_class="stable_baselines3"
         )
         env = VecMonitor(env)
+        env = VecTransposeImage(env)
 
         return env
 
@@ -670,6 +671,7 @@ class ExperimentManager(object):
             eval_freq=optuna_eval_freq,
             deterministic=self.deterministic_eval,
         )
+        breakpoint()
 
         try:
             model.learn(self.n_timesteps, callback=eval_callback)
