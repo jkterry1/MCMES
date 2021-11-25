@@ -7,7 +7,7 @@ from pettingzoo.sisl import multiwalker_v7
 from stable_baselines3 import PPO
 import sumo_rl
 
-env = sumo_rl.ingolstadt7()
+env = sumo_rl.ingolstadt7(sumo_warnings=False)
 env = ss.pad_observations_v0(env)
 env = ss.pad_action_space_v0(env)
 

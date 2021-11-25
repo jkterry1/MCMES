@@ -18,7 +18,7 @@ num = sys.argv[1]
 #     return env
 
 
-env = sumo_rl.ingolstadt7()
+env = sumo_rl.ingolstadt7(sumo_warnings=False)
 env = ss.pad_observations_v0(env)
 env = ss.pad_action_space_v0(env)
 

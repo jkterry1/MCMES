@@ -541,7 +541,7 @@ class ExperimentManager(object):
         self, n_envs: int, eval_env: bool = False, no_log: bool = False
     ) -> VecEnv:
 
-        env = sumo_rl.ingolstadt7()
+        env = sumo_rl.ingolstadt7(sumo_warnings=False)
         env = ss.pad_observations_v0(env)
         env = ss.pad_action_space_v0(env)
         env = ss.pettingzoo_env_to_vec_env_v1(env)
