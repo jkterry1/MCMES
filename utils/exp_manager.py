@@ -163,7 +163,7 @@ class ExperimentManager(object):
         self.pruner = pruner
         self.n_startup_trials = n_startup_trials
         self.n_evaluations = n_evaluations
-        self.deterministic_eval = not self.is_atari(self.env_id)
+        self.deterministic_eval = False
 
         # Logging
         self.log_folder = log_folder
