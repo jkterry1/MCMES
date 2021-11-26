@@ -42,7 +42,7 @@ for policy in policies:
         for agent in env.agent_iter():
             observation, _, done, _ = env.last()
             action = (
-                model.predict(observation, deterministic=True)[0] if not done else None
+                model.predict(observation, deterministic=False)[0] if not done else None
             )
 
             env.step(action)
