@@ -74,6 +74,7 @@ class CustomCNN(BaseFeaturesExtractor):
         features = self.activation_fn(self.fc2(features))
         return features
 
+
 activation_fn = {"tanh": F.tanh, "relu": F.relu, "elu": F.elu, "leaky_relu": F.leaky_relu}[params["activation_fn"]]
 
 params["policy_kwargs"] = dict(
@@ -120,7 +121,7 @@ all_mean_rewards = []
 
 for i in range(10):
     try:
-        model = PPO("CnnPolicy", env, verbose=3, **params)
+        model = PPO("CnnPolicy", env, verbose=1, **params)
         eval_callback = EvalCallback(
             eval_env,
             best_model_save_path="./eval_logs/" + num + "/" + str(i) + "/",
