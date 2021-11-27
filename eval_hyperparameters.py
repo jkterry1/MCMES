@@ -53,9 +53,7 @@ env = image_transpose(env)
 eval_env = multiwalker_v7.parallel_env()
 eval_env = ss.frame_stack_v1(eval_env, 3)
 eval_env = ss.pettingzoo_env_to_vec_env_v1(eval_env)
-eval_env = ss.concat_vec_envs_v1(
-    eval_env, 1, num_cpus=1, base_class="stable_baselines3"
-)
+eval_env = ss.concat_vec_envs_v1(eval_env, 1, num_cpus=1, base_class="stable_baselines3")
 eval_env = VecMonitor(eval_env)
 eval_env = image_transpose(eval_env)
 
@@ -65,7 +63,7 @@ eval_freq = max(eval_freq // (n_envs * n_agents), 1)
 all_mean_rewards = []
 for i in range(10):
     try:
-        model = PPO("MlpPolicy", env, verbose=3, **params)
+        model = PPO("MlpPolicy", env, verbose=1, **params)
         eval_callback = EvalCallback(
             eval_env,
             best_model_save_path="./eval_logs/" + num + "/" + str(i) + "/",
