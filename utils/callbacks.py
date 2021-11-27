@@ -24,7 +24,7 @@ class TrialEvalCallback(EvalCallback):
         trial: optuna.Trial,
         n_eval_episodes: int = 5,
         eval_freq: int = 10000,
-        deterministic: bool = True,
+        deterministic: bool = False,
         verbose: int = 0,
         best_model_save_path: Optional[str] = None,
         log_path: Optional[str] = None,

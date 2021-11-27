@@ -127,13 +127,13 @@ for i in range(10):
             best_model_save_path="./eval_logs/" + num + "/" + str(i) + "/",
             log_path="./eval_logs/" + num + "/" + str(i) + "/",
             eval_freq=eval_freq,
-            deterministic=True,
+            deterministic=False,
             render=False,
         )
         model.learn(total_timesteps=n_timesteps, callback=eval_callback)
         model = PPO.load("./eval_logs/" + num + "/" + str(i) + "/" + "best_model")
         mean_reward, std_reward = evaluate_policy(
-            model, eval_env, deterministic=True, n_eval_episodes=25
+            model, eval_env, deterministic=False, n_eval_episodes=25
         )
         print(mean_reward)
         print(std_reward)
