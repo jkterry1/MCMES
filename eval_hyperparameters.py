@@ -66,7 +66,7 @@ eval_freq = max(eval_freq // (n_envs * n_agents), 1)
 all_mean_rewards = []
 for i in range(10):
     try:
-        model = PPO("MlpPolicy", env, verbose=3, **params)
+        model = PPO("MlpPolicy", env, verbose=1, **params)
         eval_callback = EvalCallback(
             eval_env,
             best_model_save_path="./eval_logs/" + num + "/" + str(i) + "/",
