@@ -558,7 +558,7 @@ class ExperimentManager(object):
         ):
             if self.verbose > 0:
                 print("Wrapping into a VecTransposeImage")
-
+            env = VecTransposeImage(env)
         return env
 
     def _load_pretrained_agent(
