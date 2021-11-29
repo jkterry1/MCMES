@@ -3,7 +3,6 @@ from os.path import exists
 import numpy as np
 import supersuit as ss
 from array2gif import write_gif
-from pettingzoo.sisl import multiwalker_v7
 from stable_baselines3 import PPO
 import sumo_rl
 

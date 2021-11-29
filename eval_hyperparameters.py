@@ -1,7 +1,6 @@
 import sys
 import json
 from stable_baselines3 import PPO
-from pettingzoo.sisl import multiwalker_v7
 import supersuit as ss
 from stable_baselines3.common.vec_env import VecMonitor, VecTransposeImage, VecNormalize
 from stable_baselines3.common.evaluation import evaluate_policy
