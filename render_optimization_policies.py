@@ -25,7 +25,6 @@ for policy in policies:
     env.reset()
     reward = 0
 
-
     while True:
         for agent in env.agent_iter():
             observation, reward, done, _ = env.last()
@@ -44,5 +43,5 @@ for policy in policies:
     reward = reward / n_agents
     print("writing gif")
     write_gif(
-        obs_list, "./optimization_gifs/" + policy + "_" + "reward" + ".gif", fps=5
+        obs_list, "./optimization_gifs/" + policy + "_" + reward[:5] + ".gif", fps=5
     )
