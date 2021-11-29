@@ -7,7 +7,7 @@ from pettingzoo.butterfly import pistonball_v4
 from stable_baselines3 import PPO
 
 n_agents = 20
-n_envs = 4
+n_envs = 1
 
 env = pistonball_v4.parallel_env()
 env = ss.color_reduction_v0(env, mode="B")
@@ -49,5 +49,5 @@ for policy in policies:
 
     print("writing gif")
     write_gif(
-        obs_list, "./optimization_gifs/" + policy + "_" + str(reward[:5]) + ".gif", fps=5
+        obs_list, "./optimization_gifs/" + policy + "_" + str(reward)[:5] + ".gif", fps=15
     )
