@@ -551,7 +551,13 @@ class ExperimentManager(object):
             env, n_envs, num_cpus=4, base_class="stable_baselines3"
         )
         env = VecMonitor(env)
-        env = VecTransposeImage(env)
+        env = self._maybe_normalize(env, eval_env)
+
+        if is_image_space(env.observation_space) and not is_image_space_channels_first(
+            env.observation_space
+        ):
+            if self.verbose > 0:
+                print("Wrapping into a VecTransposeImage")
 
         return env
 
@@ -671,7 +677,6 @@ class ExperimentManager(object):
             eval_freq=optuna_eval_freq,
             deterministic=self.deterministic_eval,
         )
-        breakpoint()
 
         try:
             model.learn(self.n_timesteps, callback=eval_callback)
