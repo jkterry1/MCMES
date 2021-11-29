@@ -9,7 +9,7 @@ from stable_baselines3 import PPO
 env = multiwalker_v7.env()
 env = ss.frame_stack_v1(env, 3)
 
-n_agents = 8
+n_agents = 3
 
 policies = os.listdir("./optimization_policies/")
 
@@ -41,6 +41,7 @@ for policy in policies:
         break
 
     reward = reward / n_agents
+    print(reward)
     print("writing gif")
     write_gif(
         obs_list, "./optimization_gifs/" + policy + "_" + str(reward[:5]) + ".gif", fps=50
