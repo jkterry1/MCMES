@@ -10,7 +10,6 @@ from stable_baselines3 import PPO
 env_name = "harvest"
 n_agents = 5
 num_frames = 4
-n_envs = 8
 
 env = pettingzoo_env.env(
     env=env_name,
@@ -18,14 +17,12 @@ env = pettingzoo_env.env(
 )
 env = ss.observation_lambda_v0(env, lambda x, _: x["curr_obs"], lambda s: s["curr_obs"])
 env = ss.frame_stack_v1(env, num_frames)
-env = ss.pettingzoo_env_to_vec_env_v1(env)
-env = ss.concat_vec_envs_v1(env, n_envs, num_cpus=1, base_class="stable_baselines3")
 
 policies = os.listdir("./optimization_policies/")
 
 for policy in policies:
     filepath = "./optimization_policies/" + policy + "/best_model"
-    if not exists(filepath + ".zip"):
+    if not exists(filepath + '.zip'):
         continue
     print("Loading new policy ", filepath)
     model = PPO.load(filepath)
@@ -39,11 +36,7 @@ for policy in policies:
         while True:
             for agent in env.agent_iter():
                 observation, reward, done, _ = env.last()
-                action = (
-                    model.predict(observation, deterministic=False)[0]
-                    if not done
-                    else None
-                )
+                action = (model.predict(observation, deterministic=False)[0] if not done else None)
                 reward += reward
 
                 env.step(action)
@@ -58,7 +51,7 @@ for policy in policies:
         reward = reward / n_agents
         print("writing gif")
         write_gif(
-            obs_list, "./optimization_gifs/" + policy + "_" + "reward" + ".gif", fps=5
+            obs_list, "./optimization_gifs/" + policy + "_" + str(reward)[:5] + ".gif", fps=5
         )
     except:
         print("error")
