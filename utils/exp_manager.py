@@ -539,7 +539,7 @@ class ExperimentManager(object):
     
         env_name = "harvest"
         n_agents = 5
-        num_frames = 4 # Should be a hyperparameter
+        num_frames = 4
         env = pettingzoo_env.parallel_env(
             env=env_name,
             num_agents=n_agents,
