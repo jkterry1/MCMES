@@ -41,7 +41,6 @@ for policy in policies:
         break
 
     reward = reward / n_agents
-    print(reward)
     print("writing gif")
     write_gif(
         obs_list, "./optimization_gifs/" + policy + "_" + str(reward)[:5] + ".gif", fps=50
