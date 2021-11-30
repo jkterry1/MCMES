@@ -64,7 +64,7 @@ from utils.utils import (
     linear_schedule,
 )
 
-from pettingzoo.butterfly import pistonball_v4
+import pettingzoo.butterfly.pistonball_v4 as pistonball_v4
 import supersuit as ss
 
 
