@@ -35,8 +35,8 @@ env = pistonball_v4.parallel_env(continuous=False)
 env = ss.color_reduction_v0(env, mode="B")
 env = ss.resize_v0(env, x_size=84, y_size=84)
 env = ss.frame_stack_v1(env, 3)
-env = ss.pettingzoo_env_to_vec_env_v0(env)
-env = ss.concat_vec_envs_v0(env, n_envs, num_cpus=1, base_class="stable_baselines3")
+env = ss.pettingzoo_env_to_vec_env_v1(env)
+env = ss.concat_vec_envs_v1(env, n_envs, num_cpus=1, base_class="stable_baselines3")
 env = VecMonitor(env)
 env = image_transpose(env)
 
@@ -44,8 +44,8 @@ eval_env = pistonball_v4.parallel_env(continuous=False)
 eval_env = ss.color_reduction_v0(eval_env, mode="B")
 eval_env = ss.resize_v0(eval_env, x_size=84, y_size=84)
 eval_env = ss.frame_stack_v1(eval_env, 3)
-eval_env = ss.pettingzoo_env_to_vec_env_v0(eval_env)
-eval_env = ss.concat_vec_envs_v0(
+eval_env = ss.pettingzoo_env_to_vec_env_v1(eval_env)
+eval_env = ss.concat_vec_envs_v1(
     eval_env, 1, num_cpus=1, base_class="stable_baselines3"
 )
 eval_env = VecMonitor(eval_env)
