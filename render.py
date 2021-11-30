@@ -17,12 +17,6 @@ os.environ["SDL_VIDEODRIVER"] = "dummy"
 num = sys.argv[1]
 
 
-# def image_transpose(env):
-#     if is_image_space(env.observation_space) and not is_image_space_channels_first(env.observation_space):
-#         env = VecTransposeImage(env)
-#     return env
-
-
 env = pursuit_v4.env()
 env = ss.flatten_v0(env)
 
