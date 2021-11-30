@@ -5,6 +5,17 @@ import supersuit as ss
 from array2gif import write_gif
 from pettingzoo.sisl import pursuit_v4
 from stable_baselines3 import PPO
+from stable_baselines3.common.preprocessing import is_image_space, is_image_space_channels_first
+from stable_baselines3.common.vec_env import VecMonitor, VecTransposeImage,
+
+
+def image_transpose(env):
+    if is_image_space(env.observation_space) and not is_image_space_channels_first(
+        env.observation_space
+    ):
+        env = VecTransposeImage(env)
+    return env
+
 
 env = pursuit_v4.env()
 env = ss.flatten_v0(env)

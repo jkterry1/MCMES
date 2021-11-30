@@ -6,10 +6,7 @@ import supersuit as ss
 from stable_baselines3.common.vec_env import VecMonitor, VecTransposeImage, VecNormalize
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.callbacks import EvalCallback
-from stable_baselines3.common.preprocessing import (
-    is_image_space,
-    is_image_space_channels_first,
-)
+from stable_baselines3.common.preprocessing import is_image_space, is_image_space_channels_first
 from torch import nn as nn
 
 num = sys.argv[1]
@@ -43,14 +40,16 @@ def image_transpose(env):
 
 
 env = pursuit_v4.parallel_env()
+env = ss.flatten_v0(env)
+env = ss.pettingzoo_env_to_vec_env_v1(env)
 env = ss.concat_vec_envs_v1(env, n_envs, num_cpus=1, base_class="stable_baselines3")
 env = VecMonitor(env)
 env = image_transpose(env)
 
 eval_env = pursuit_v4.parallel_env()
 eval_env = ss.flatten_v0(eval_env)
-eval_env = ss.pettingzoo_env_to_vec_env_v0(eval_env)
-eval_env = ss.concat_vec_envs_v0(
+eval_env = ss.pettingzoo_env_to_vec_env_v1(eval_env)
+eval_env = ss.concat_vec_envs_v1(
     eval_env, 1, num_cpus=1, base_class="stable_baselines3"
 )
 eval_env = VecMonitor(eval_env)
