@@ -74,6 +74,7 @@ for i in range(10):
             deterministic=True,
             render=False,
         )
+        print('before learning')
         model.learn(total_timesteps=n_timesteps, callback=eval_callback)
         model = PPO.load("./eval_logs/" + num + "/" + str(i) + "/" + "best_model")
         mean_reward, std_reward = evaluate_policy(
