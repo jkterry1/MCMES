@@ -11,6 +11,7 @@ from stable_baselines3.common.preprocessing import (
 )
 from torch import nn as nn
 import sumo_rl
+import pdb
 
 num = sys.argv[1]
 n_evaluations = 20
@@ -77,6 +78,7 @@ for i in range(10):
             render=False,
         )
         print('c')
+        breakpoint()
         model.learn(total_timesteps=n_timesteps, callback=eval_callback)
         print('d')
         model = PPO.load("./eval_logs/" + num + "/" + str(i) + "/" + "best_model")
