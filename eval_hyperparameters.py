@@ -65,7 +65,9 @@ eval_freq = max(eval_freq // (n_envs * n_agents), 1)
 all_mean_rewards = []
 for i in range(10):
     try:
+        print('a')
         model = PPO("MlpPolicy", env, verbose=1, **params)
+        print('b')
         eval_callback = EvalCallback(
             eval_env,
             best_model_save_path="./eval_logs/" + num + "/" + str(i) + "/",
@@ -74,8 +76,9 @@ for i in range(10):
             deterministic=True,
             render=False,
         )
-        print('before learning')
+        print('c')
         model.learn(total_timesteps=n_timesteps, callback=eval_callback)
+        print('d')
         model = PPO.load("./eval_logs/" + num + "/" + str(i) + "/" + "best_model")
         mean_reward, std_reward = evaluate_policy(
             model, eval_env, deterministic=True, n_eval_episodes=25
