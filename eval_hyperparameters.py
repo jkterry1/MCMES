@@ -65,41 +65,38 @@ eval_freq = max(eval_freq // (n_envs * n_agents), 1)
 
 all_mean_rewards = []
 for i in range(10):
-    try:
-        print('a')
-        model = PPO("MlpPolicy", env, verbose=1, **params)
-        print('b')
-        eval_callback = EvalCallback(
-            eval_env,
-            best_model_save_path="./eval_logs/" + num + "/" + str(i) + "/",
-            log_path="./eval_logs/" + num + "/" + str(i) + "/",
-            eval_freq=eval_freq,
-            deterministic=True,
-            render=False,
+    print('a')
+    model = PPO("MlpPolicy", env, verbose=1, **params)
+    print('b')
+    eval_callback = EvalCallback(
+        eval_env,
+        best_model_save_path="./eval_logs/" + num + "/" + str(i) + "/",
+        log_path="./eval_logs/" + num + "/" + str(i) + "/",
+        eval_freq=eval_freq,
+        deterministic=True,
+        render=False,
+    )
+    print('c')
+    model.learn(total_timesteps=n_timesteps, callback=eval_callback)
+    print('d')
+    model = PPO.load("./eval_logs/" + num + "/" + str(i) + "/" + "best_model")
+    mean_reward, std_reward = evaluate_policy(
+        model, eval_env, deterministic=True, n_eval_episodes=25
+    )
+    print(mean_reward)
+    print(std_reward)
+    all_mean_rewards.append(mean_reward)
+    if mean_reward > -.1:
+        model.save(
+            "./mature_policies/"
+            + str(num)
+            + "/"
+            + str(i)
+            + "_"
+            + str(mean_reward).split(".")[0]
+            + ".zip"
         )
-        print('c')
-        breakpoint()
-        model.learn(total_timesteps=n_timesteps, callback=eval_callback)
-        print('d')
-        model = PPO.load("./eval_logs/" + num + "/" + str(i) + "/" + "best_model")
-        mean_reward, std_reward = evaluate_policy(
-            model, eval_env, deterministic=True, n_eval_episodes=25
-        )
-        print(mean_reward)
-        print(std_reward)
-        all_mean_rewards.append(mean_reward)
-        if mean_reward > -.1:
-            model.save(
-                "./mature_policies/"
-                + str(num)
-                + "/"
-                + str(i)
-                + "_"
-                + str(mean_reward).split(".")[0]
-                + ".zip"
-            )
-    except:
-        print("error")
+
 
 if len(all_mean_rewards) > 0:
     print(sum(all_mean_rewards) / len(all_mean_rewards))
