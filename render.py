@@ -1,5 +1,5 @@
 from stable_baselines3 import PPO
-from pettingzoo.butterfly import cooperative_pong_v3
+from pettingzoo.butterfly import cooperative_pong_v4
 import supersuit as ss
 from stable_baselines3.common.vec_env import VecMonitor, VecTransposeImage, VecNormalize
 from stable_baselines3.common.evaluation import evaluate_policy
@@ -23,7 +23,7 @@ num = sys.argv[1]
 #     return env
 
 
-env = cooperative_pong_v3.parallel_env()
+env = cooperative_pong_v4.parallel_env()
 player1 = env.possible_agents[0]
 
 
@@ -34,7 +34,7 @@ def invert_agent_indication(obs, agent):
     return np.concatenate([obs, obs2], axis=2)
 
 
-env = cooperative_pong_v3.env()
+env = cooperative_pong_v4.env()
 env = ss.color_reduction_v0(env, mode="B")
 env = ss.resize_v0(env, x_size=84, y_size=84)
 env = ss.observation_lambda_v0(env, invert_agent_indication)

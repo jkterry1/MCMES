@@ -3,12 +3,12 @@ from os.path import exists
 import numpy as np
 import supersuit as ss
 from array2gif import write_gif
-from pettingzoo.butterfly import cooperative_pong_v3
+from pettingzoo.butterfly import cooperative_pong_v4
 from stable_baselines3 import PPO
 
 n_agents = 2
 
-env = cooperative_pong_v3.parallel_env()
+env = cooperative_pong_v4.parallel_env()
 player1 = env.possible_agents[0]
 
 
@@ -19,7 +19,7 @@ def invert_agent_indication(obs, agent):
     return np.concatenate([obs, obs2], axis=2)
 
 
-env = cooperative_pong_v3.env()
+env = cooperative_pong_v4.env()
 env = ss.color_reduction_v0(env, mode="B")
 env = ss.resize_v0(env, x_size=84, y_size=84)
 env = ss.observation_lambda_v0(env, invert_agent_indication)

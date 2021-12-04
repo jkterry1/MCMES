@@ -64,7 +64,7 @@ from utils.utils import (
     linear_schedule,
 )
 
-from pettingzoo.butterfly import cooperative_pong_v3
+from pettingzoo.butterfly import cooperative_pong_v4
 import supersuit as ss
 
 
@@ -541,7 +541,7 @@ class ExperimentManager(object):
         self, n_envs: int, eval_env: bool = False, no_log: bool = False
     ) -> VecEnv:
 
-        env = cooperative_pong_v3.env()
+        env = cooperative_pong_v4.env()
         player1 = env.possible_agents[0]
 
         def invert_agent_indication(obs, agent):
@@ -550,7 +550,7 @@ class ExperimentManager(object):
             obs2 = obs if agent == player1 else 255 - obs
             return np.concatenate([obs, obs2], axis=2)
 
-        env = cooperative_pong_v3.parallel_env()
+        env = cooperative_pong_v4.parallel_env()
         env = ss.color_reduction_v0(env, mode="B")
         env = ss.resize_v0(env, x_size=84, y_size=84)
         env = ss.observation_lambda_v0(env, invert_agent_indication)
