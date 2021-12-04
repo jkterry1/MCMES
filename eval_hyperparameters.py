@@ -53,8 +53,8 @@ env = flocking_env.parallel_env(
 )
 env = ss.delay_observations_v0(env, reaction_frames)
 env = ss.frame_skip_v0(env, skip_frames)
-env = ss.pettingzoo_env_to_vec_env_v0(env)
-env = ss.concat_vec_envs_v0(env, n_envs, num_cpus=1, base_class="stable_baselines3")
+env = ss.pettingzoo_env_to_vec_env_v1(env)
+env = ss.concat_vec_envs_v1(env, n_envs, num_cpus=1, base_class="stable_baselines3")
 env = VecMonitor(env)
 
 eval_env = flocking_env.parallel_env(
@@ -67,8 +67,8 @@ eval_env = flocking_env.parallel_env(
 )
 eval_env = ss.delay_observations_v0(eval_env, reaction_frames)
 eval_env = ss.frame_skip_v0(eval_env, skip_frames)
-eval_env = ss.pettingzoo_env_to_vec_env_v0(eval_env)
-eval_env = ss.concat_vec_envs_v0(eval_env, 1, num_cpus=1, base_class="stable_baselines3")
+eval_env = ss.pettingzoo_env_to_vec_env_v1(eval_env)
+eval_env = ss.concat_vec_envs_v1(eval_env, 1, num_cpus=1, base_class="stable_baselines3")
 eval_env = VecMonitor(eval_env)
 
 eval_freq = int(n_timesteps / n_evaluations)
