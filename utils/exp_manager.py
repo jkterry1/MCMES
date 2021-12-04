@@ -556,7 +556,6 @@ class ExperimentManager(object):
         env = ss.observation_lambda_v0(env, invert_agent_indication)
         env = ss.frame_stack_v1(env, 3)
         env = ss.pettingzoo_env_to_vec_env_v1(env)
-        env = ss.pettingzoo_env_to_vec_env_v1(env)
         print(n_envs)
         env = ss.concat_vec_envs_v0(
             env, n_envs, num_cpus=4, base_class="stable_baselines3"
