@@ -80,7 +80,7 @@ for i in range(10):
         print(mean_reward)
         print(std_reward)
         all_mean_rewards.append(mean_reward)
-        if mean_reward > 50:
+        if mean_reward > 70:
             model.save(
                 "./mature_policies/"
                 + str(num)
