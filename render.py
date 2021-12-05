@@ -17,8 +17,9 @@ num = sys.argv[1]
 #         env = VecTransposeImage(env)
 #     return env
 
+RESOLUTION = (5000, 5000)
 
-env = sumo_rl.ingolstadt7(sumo_warnings=False)
+env = sumo_rl.ingolstadt7(sumo_warnings=False, virtual_display=RESOLUTION)
 env = ss.pad_observations_v0(env)
 env = ss.pad_action_space_v0(env)
 
