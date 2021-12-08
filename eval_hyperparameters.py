@@ -14,7 +14,7 @@ from stable_baselines3.common.preprocessing import (
 num = sys.argv[1]
 n_evaluations = 20
 n_agents = 20
-n_envs = 4
+n_envs = 1
 n_timesteps = 2000000
 
 with open("./hyperparameter_jsons/" + "hyperparameters_" + num + ".json") as f:
