@@ -495,7 +495,7 @@ class ExperimentManager(object):
         episodes = 300
         nerve_impulse_hz = 200
         reaction_frames = 0
-        time = 10
+        time = 60
         n_timesteps = hz * time * n_agents * episodes
         distance_reward_per_m = 100 / total_distance_m
         energy_reward_per_j = -10 / total_energy_j
