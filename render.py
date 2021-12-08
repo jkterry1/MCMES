@@ -5,6 +5,8 @@ import os
 import sys
 from array2gif import write_gif
 import sumo_rl
+from pettingzoo.utils.conversions import from_parallel
+
 
 #import pyglet
 
@@ -19,6 +21,7 @@ num = sys.argv[1]
 
 
 env = sumo_rl.ingolstadt7(sumo_warnings=False)
+env = from_parallel(env)
 env = ss.pad_observations_v0(env)
 env = ss.pad_action_space_v0(env)
 
