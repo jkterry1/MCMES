@@ -47,7 +47,7 @@ for policy in policies:
 
     print("writing gif")
     write_gif(
-        obs_list, "./mature_gifs/" + num + "_" + policy.split(".")[0] + ".gif", fps=5
+        obs_list, "./mature_gifs/" + num + "_" + policy.split(".")[0] + ".gif", fps=10
     )
 
 env.close()
