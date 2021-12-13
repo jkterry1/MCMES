@@ -4,7 +4,7 @@ import numpy as np
 import supersuit as ss
 from array2gif import write_gif
 from pettingzoo.butterfly import pistonball_v5
-from stable_baselines3 import PPO
+from stable_baselines3 import dqn
 
 n_agents = 20
 
@@ -20,7 +20,7 @@ for policy in policies:
     if not exists(filepath + '.zip'):
         continue
     print("Loading new policy ", filepath)
-    model = PPO.load(filepath)
+    model = dqn.load(filepath)
 
     obs_list = []
     i = 0
