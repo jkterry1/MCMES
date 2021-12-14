@@ -62,5 +62,5 @@ for policy in policies:
         if total_reward > 70:
             print("writing gif")
             write_gif(
-                obs_list, "./mature_gifs/" + num + "_" + policy.split("_")[0] + j + '_' + total_reward + ".gif", fps=50
+                obs_list, "./mature_gifs/" + num + "_" + policy.split("_")[0] + j + '_' + str(total_reward) + ".gif", fps=50
             )
