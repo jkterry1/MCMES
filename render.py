@@ -23,7 +23,7 @@ RESOLUTION = (4000, 4000)
 
 n_agents = 7
 
-env = sumo_rl.ingolstadt7(sumo_warnings=False, virtual_display=RESOLUTION)
+env = sumo_rl.ingolstadt7(sumo_warnings=False, virtual_display=RESOLUTION, use_gui=True)
 env = from_parallel(env)
 env = ss.pad_observations_v0(env)
 env = ss.pad_action_space_v0(env)
