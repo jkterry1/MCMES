@@ -22,6 +22,10 @@ with open("./hyperparameter_jsons/" + "hyperparameters_" + num + ".json") as f:
 
 print(params)
 
+params['gradient_steps'] = max(params['train_freq'] // params['subsample_steps'], 1)
+
+del params['subsample_steps']
+
 
 def image_transpose(env):
     if is_image_space(env.observation_space) and not is_image_space_channels_first(
