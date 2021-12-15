@@ -49,9 +49,8 @@ for policy in policies:
                 env.step(action)
                 i += 1
                 if i % (len(env.possible_agents) + 1) == 0:
-                    obs_list.append(
-                        np.transpose(env.render(mode="rgb_array"), axes=(1, 0, 2))
-                    )
+                    render_array = np.transpose(env.render(mode="rgb_array"), axes=(1, 0, 2))
+                    obs_list.append(render_array.astype('uint8'))
 
             break
 
