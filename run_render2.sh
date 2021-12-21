@@ -1,7 +1,9 @@
 mkdir -p ./mature_gifs
 mkdir -p ./render_logs
+mkdir -p ./render_cache
 rm -rf mature_gifs/*
 rm -rf render_logs/*
+rm -rf render_cache/*
 
 CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=1 nohup xvfb-run -a -s "-screen 0 1400x900x24" python3 render.py 8 &> ./render_logs/render_8.out &
 CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=1 nohup xvfb-run -a -s "-screen 0 1400x900x24" python3 render.py 9 &> ./render_logs/render_9.out &
