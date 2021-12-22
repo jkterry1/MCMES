@@ -1,6 +1,7 @@
 PettingZoo
 supersuit
 stable-baselines3
+scipy
 array2gif
 scikit-optimize
 optuna
