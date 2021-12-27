@@ -62,7 +62,7 @@ for policy in policies:
         if total_reward > -.1:
             print("Rendering frames")
             name = "./mature_gifs/" + num + "_" + policy.split("_")[0] + j + '_' + str(total_reward)[:5] + ".mp4"
-            subprocess.run(["ffmpeg", "-y", "-framerate", "5", "-i", cache+"img%d.jpg", name]
+            subprocess.run(["ffmpeg", "-y", "-framerate", "5", "-i", cache+"img%d.jpg", name])
 
         # clear scratch directory
         for file in os.scandir(cache):
