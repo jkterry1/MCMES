@@ -2,6 +2,7 @@ import json
 import sys
 
 import gym
+from stable_baselines3.common.vec_env.vec_transpose import VecTransposeImage
 import torch
 from torch import nn
 from torch.nn import functional as F
@@ -77,7 +78,8 @@ class CustomCNN(BaseFeaturesExtractor):
 
 activation_fn = {"tanh": F.tanh, "relu": F.relu, "elu": F.elu, "leaky_relu": F.leaky_relu}[params["activation_fn"]]
 net_arch = {"small": [dict(pi=[64, 64], vf=[64, 64])], "medium": [dict(pi=[256, 256], vf=[256, 256])], "large": [dict(pi=[400, 300], vf=[400, 300])], "extra_large": [dict(pi=[750, 750, 500], vf=[750, 750, 500])]}[params["net_arch"]]
-fcnet_hiddens = {"small": [128, 32], "medium": [256, 64], "large": [1024, 128], "extra_large": [1024, 256]}[params["net_arch"]]
+# fcnet_hiddens = {"small": [128, 32], "medium": [256, 64], "large": [1024, 128], "extra_large": [1024, 256]}[params["net_arch"]]
+fcnet_hiddens = [1024, 128]
 
 params["policy_kwargs"] = dict(
     features_extractor_class=CustomCNN,
@@ -89,7 +91,6 @@ params["policy_kwargs"] = dict(
     net_arch=net_arch,
 )
 
-del params["num_frames"]
 del params["net_arch"]
 del params["activation_fn"]
 
@@ -101,6 +102,7 @@ env = ss.observation_lambda_v0(env, lambda x, _: x["curr_obs"], lambda s: s["cur
 env = ss.frame_stack_v1(env, num_frames)
 env = ss.pettingzoo_env_to_vec_env_v1(env)
 env = ss.concat_vec_envs_v1(env, n_envs, num_cpus=n_cpus, base_class="stable_baselines3")
+env = VecTransposeImage(env)
 env = VecMonitor(env)
 
 eval_env = pettingzoo_env.parallel_env(
@@ -113,6 +115,7 @@ eval_env = ss.pettingzoo_env_to_vec_env_v1(eval_env)
 eval_env = ss.concat_vec_envs_v1(
     eval_env, 1, num_cpus=n_cpus, base_class="stable_baselines3"
 )
+eval_env = VecTransposeImage(eval_env)
 eval_env = VecMonitor(eval_env)
 
 eval_freq = int(n_timesteps / n_evaluations)
@@ -121,36 +124,36 @@ eval_freq = max(eval_freq // (n_envs * n_agents), 1)
 all_mean_rewards = []
 
 for i in range(10):
-    try:
-        model = PPO("CnnPolicy", env, verbose=1, **params)
-        eval_callback = EvalCallback(
-            eval_env,
-            best_model_save_path="./eval_logs/" + num + "/" + str(i) + "/",
-            log_path="./eval_logs/" + num + "/" + str(i) + "/",
-            eval_freq=eval_freq,
-            deterministic=False,
-            render=False,
+    # try:
+    model = PPO("CnnPolicy", env, verbose=1, **params)
+    eval_callback = EvalCallback(
+        eval_env,
+        best_model_save_path="./eval_logs/" + num + "/" + str(i) + "/",
+        log_path="./eval_logs/" + num + "/" + str(i) + "/",
+        eval_freq=eval_freq,
+        deterministic=False,
+        render=False,
+    )
+    model.learn(total_timesteps=n_timesteps, callback=eval_callback)
+    model = PPO.load("./eval_logs/" + num + "/" + str(i) + "/" + "best_model")
+    mean_reward, std_reward = evaluate_policy(
+        model, eval_env, deterministic=False, n_eval_episodes=25
+    )
+    print(mean_reward)
+    print(std_reward)
+    all_mean_rewards.append(mean_reward)
+    if mean_reward > 0:
+        model.save(
+            "./mature_policies/"
+            + str(num)
+            + "/"
+            + str(i)
+            + "_"
+            + str(mean_reward).split(".")[0]
+            + ".zip"
         )
-        model.learn(total_timesteps=n_timesteps, callback=eval_callback)
-        model = PPO.load("./eval_logs/" + num + "/" + str(i) + "/" + "best_model")
-        mean_reward, std_reward = evaluate_policy(
-            model, eval_env, deterministic=False, n_eval_episodes=25
-        )
-        print(mean_reward)
-        print(std_reward)
-        all_mean_rewards.append(mean_reward)
-        if mean_reward > 0:
-            model.save(
-                "./mature_policies/"
-                + str(num)
-                + "/"
-                + str(i)
-                + "_"
-                + str(mean_reward).split(".")[0]
-                + ".zip"
-            )
-    except:
-        print("Error occurred during evaluation")
+    # except:
+    #     print("Error occurred during evaluation")
 
 if len(all_mean_rewards) > 0:
     print(sum(all_mean_rewards) / len(all_mean_rewards))
