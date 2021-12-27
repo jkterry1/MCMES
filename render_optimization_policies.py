@@ -2,6 +2,7 @@ import os
 from os.path import exists
 
 import numpy as np
+from scipy.ndimage import zoom
 import supersuit as ss
 from array2gif import write_gif
 from social_dilemmas.envs import pettingzoo_env
@@ -10,6 +11,7 @@ from stable_baselines3 import PPO
 env_name = "harvest"
 n_agents = 5
 num_frames = 4
+scale = 10
 
 env = pettingzoo_env.env(
     env=env_name,
@@ -41,9 +43,9 @@ for policy in policies:
             env.step(action)
             i += 1
             if i % (len(env.possible_agents) + 1) == 0:
-                obs_list.append(
-                    np.transpose(env.render(mode="rgb_array"), axes=(1, 0, 2))
-                )
+                obs = np.transpose(env.render(mode="rgb_array"), axes=(1, 0, 2))
+                obs_scaled = zoom(obs, (scale, scale, 1), order=0)
+                obs_list.append(obs_scaled)
 
         break
 
