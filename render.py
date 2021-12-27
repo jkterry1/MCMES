@@ -30,7 +30,7 @@ env = ss.frame_stack_v1(env, 3)
 
 policies = os.listdir("./mature_policies/" + str(num) + "/")
 
-n_agents = 20
+n_agents = 6
 
 for policy in policies:
     model = PPO.load("./mature_policies/" + str(num) + "/" + policy)
