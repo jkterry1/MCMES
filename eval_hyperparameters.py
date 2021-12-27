@@ -89,7 +89,6 @@ params["policy_kwargs"] = dict(
     net_arch=net_arch,
 )
 
-del params["fcnet_hiddens"]
 del params["net_arch"]
 del params["activation_fn"]
 
