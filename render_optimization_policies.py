@@ -35,6 +35,7 @@ render_env = flocking_env.env(
     energy_reward=energy_reward_per_j,
     forward_reward=distance_reward_per_m,
     crash_reward=crash_reward,
+    action_logging=True,
     LIA=True,
 )
 render_env = ss.delay_observations_v0(render_env, reaction_frames)
@@ -44,7 +45,7 @@ policies = os.listdir("./optimization_policies/")
 
 for policy in policies:
     filepath = "./optimization_policies/" + policy + "/best_model"
-    if not exists(filepath+'.zip'):
+    if not exists(filepath + '.zip'):
         continue
     print("Loading new policy ", filepath)
     model = PPO.load(filepath)
@@ -57,7 +58,7 @@ for policy in policies:
 
     for agent in render_env.agent_iter():
         observation, reward, done, _ = render_env.last()
-        rewards[agent]+=reward
+        rewards[agent] += reward
         action = model.predict(observation, deterministic=True)[0] if not done else None
         act_str = "Agent: " + str(agent) + "\t Action: " + str(action)+"\n"
         act_file.write(act_str)
@@ -65,10 +66,12 @@ for policy in policies:
 
     avg_rew = 0
     for agent in rewards:
-        avg_rew += rewards[agent]/n_agents
+        avg_rew += rewards[agent] / n_agents
     #print("Saving vortex logs")
     #render_env.unwrapped.log_vortices("./results/" + policy +"_vortices" + ".csv")
     print("Saving bird logs: ./results/" + policy + "_" +
                                     str(avg_rew) + "_birds" + ".csv")
     render_env.unwrapped.log_birds("./results/" + policy + "_" +
                                     str(avg_rew) + "_birds" + ".csv")
+    render_env.unwrapped.log_actions("./results/" + policy + "_" +
+                                    str(avg_rew) + "_actions" + ".csv")
