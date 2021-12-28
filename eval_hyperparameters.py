@@ -2,6 +2,7 @@ import json
 import sys
 
 import gym
+from stable_baselines3.common.vec_env.vec_transpose import VecTransposeImage
 import torch
 from torch import nn
 from torch.nn import functional as F
@@ -77,7 +78,8 @@ class CustomCNN(BaseFeaturesExtractor):
 
 activation_fn = {"tanh": F.tanh, "relu": F.relu, "elu": F.elu, "leaky_relu": F.leaky_relu}[params["activation_fn"]]
 net_arch = {"small": [dict(pi=[64, 64], vf=[64, 64])], "medium": [dict(pi=[256, 256], vf=[256, 256])], "large": [dict(pi=[400, 300], vf=[400, 300])], "extra_large": [dict(pi=[750, 750, 500], vf=[750, 750, 500])]}[params["net_arch"]]
-fcnet_hiddens = {"small": [128, 32], "medium": [256, 64], "large": [1024, 128], "extra_large": [1024, 256]}[params["net_arch"]]
+# fcnet_hiddens = {"small": [128, 32], "medium": [256, 64], "large": [1024, 128], "extra_large": [1024, 256]}[params["net_arch"]]
+fcnet_hiddens = [1024, 128]
 
 params["policy_kwargs"] = dict(
     features_extractor_class=CustomCNN,
@@ -100,6 +102,7 @@ env = ss.observation_lambda_v0(env, lambda x, _: x["curr_obs"], lambda s: s["cur
 env = ss.frame_stack_v1(env, num_frames)
 env = ss.pettingzoo_env_to_vec_env_v1(env)
 env = ss.concat_vec_envs_v1(env, n_envs, num_cpus=n_cpus, base_class="stable_baselines3")
+env = VecTransposeImage(env)
 env = VecMonitor(env)
 
 eval_env = pettingzoo_env.parallel_env(
@@ -112,6 +115,7 @@ eval_env = ss.pettingzoo_env_to_vec_env_v1(eval_env)
 eval_env = ss.concat_vec_envs_v1(
     eval_env, 1, num_cpus=n_cpus, base_class="stable_baselines3"
 )
+eval_env = VecTransposeImage(eval_env)
 eval_env = VecMonitor(eval_env)
 
 eval_freq = int(n_timesteps / n_evaluations)
