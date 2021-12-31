@@ -34,38 +34,38 @@ cache = "./render_cache/" + str(num) + "/"
 
 os.mkdir(cache)
 
-for policy in policies[0]:
-    model = PPO.load("./mature_policies/" + str(num) + "/" + policy)
 
-    for j in ['a']:
+model = PPO.load("./mature_policies/" + str(num) + "/0_-0.zip")
 
-        i = 0
-        env.reset()
-        total_reward = 0
+for j in ['a']:
 
-        for k in range(int(1e10)):
-            for agent in env.agent_iter():
-                observation, reward, done, _ = env.last()
-                action = (model.predict(observation, deterministic=True)[0] if not done else None)
-                total_reward += reward
+    i = 0
+    env.reset()
+    total_reward = 0
 
-                env.step(action)
-                i += 1
-                if i % (len(env.possible_agents) + 1) == 0:
-                    render_array = env.render(mode="rgb_array")
-                    imageio.imwrite(cache + str(k) + '.jpg', render_array.astype('uint8'))
+    for k in range(int(1e10)):
+        for agent in env.agent_iter():
+            observation, reward, done, _ = env.last()
+            action = (model.predict(observation, deterministic=True)[0] if not done else None)
+            total_reward += reward
 
-            break
+            env.step(action)
+            i += 1
+            if i % (len(env.possible_agents) + 1) == 0:
+                render_array = env.render(mode="rgb_array")
+                imageio.imwrite(cache + str(k) + '.jpg', render_array.astype('uint8'))
 
-        total_reward = total_reward / n_agents
+        break
 
-        # if total_reward > -.1:
-        #     print("Rendering frames")
-        #     name = "./mature_gifs/" + num + "_" + policy.split("_")[0] + j + '_' + str(total_reward)[:5] + ".mp4"
-        #     subprocess.run(["ffmpeg", "-y", "-framerate", "5", "-i", cache + "%d.jpg", name])
+    # total_reward = total_reward / n_agents
 
-        # # clear scratch directory
-        # for file in os.scandir(cache):
-        #     os.remove(file.path)
+    # if total_reward > -.1:
+    #     print("Rendering frames")
+    #     name = "./mature_gifs/" + num + "_" + policy.split("_")[0] + j + '_' + str(total_reward)[:5] + ".mp4"
+    #     subprocess.run(["ffmpeg", "-y", "-framerate", "5", "-i", cache + "%d.jpg", name])
+
+    # # clear scratch directory
+    # for file in os.scandir(cache):
+    #     os.remove(file.path)
 
 env.close()
