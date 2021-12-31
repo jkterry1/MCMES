@@ -40,22 +40,22 @@ model = PPO.load("./mature_policies/" + str(num) + "/0_-0.zip")
 for j in ['a']:
 
     i = 0
+    k = 0
     env.reset()
     total_reward = 0
 
-    for k in range(int(1e10)):
-        for agent in env.agent_iter():
-            observation, reward, done, _ = env.last()
-            action = (model.predict(observation, deterministic=True)[0] if not done else None)
-            total_reward += reward
 
-            env.step(action)
-            i += 1
-            if i % (len(env.possible_agents) + 1) == 0:
-                render_array = env.render(mode="rgb_array")
-                imageio.imwrite(cache + str(k) + '.jpg', render_array.astype('uint8'))
+    for agent in env.agent_iter():
+        observation, reward, done, _ = env.last()
+        action = (model.predict(observation, deterministic=True)[0] if not done else None)
+        total_reward += reward
 
-        break
+        env.step(action)
+        i += 1
+        if i % (len(env.possible_agents) + 1) == 0:
+            render_array = env.render(mode="rgb_array")
+            imageio.imwrite(cache + str(k) + '.jpg', render_array.astype('uint8'))
+            k = k + 1
 
     # total_reward = total_reward / n_agents
 
