@@ -34,10 +34,10 @@ cache = "./render_cache/" + str(num) + "/"
 
 os.mkdir(cache)
 
-for policy in policies:
+for policy in policies[0]:
     model = PPO.load("./mature_policies/" + str(num) + "/" + policy)
 
-    for j in ['a', 'b', 'c', 'd', 'e']:
+    for j in ['a']:
 
         i = 0
         env.reset()
@@ -59,13 +59,13 @@ for policy in policies:
 
         total_reward = total_reward / n_agents
 
-        if total_reward > -.1:
-            print("Rendering frames")
-            name = "./mature_gifs/" + num + "_" + policy.split("_")[0] + j + '_' + str(total_reward)[:5] + ".mp4"
-            subprocess.run(["ffmpeg", "-y", "-framerate", "5", "-i", cache + "%d.jpg", name])
+        # if total_reward > -.1:
+        #     print("Rendering frames")
+        #     name = "./mature_gifs/" + num + "_" + policy.split("_")[0] + j + '_' + str(total_reward)[:5] + ".mp4"
+        #     subprocess.run(["ffmpeg", "-y", "-framerate", "5", "-i", cache + "%d.jpg", name])
 
-        # clear scratch directory
-        for file in os.scandir(cache):
-            os.remove(file.path)
+        # # clear scratch directory
+        # for file in os.scandir(cache):
+        #     os.remove(file.path)
 
 env.close()
