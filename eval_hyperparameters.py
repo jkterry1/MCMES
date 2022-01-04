@@ -11,7 +11,6 @@ from stable_baselines3.common.preprocessing import (
 )
 from torch import nn as nn
 import sumo_rl
-import pdb
 
 num = sys.argv[1]
 n_evaluations = 20
