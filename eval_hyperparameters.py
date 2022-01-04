@@ -40,7 +40,7 @@ class CustomCNN(BaseFeaturesExtractor):
     def __init__(
         self,
         observation_space: gym.spaces.Box,
-        features_dim=128, # placeholder
+        features_dim=128,  # placeholder
         view_len=7,
         num_frames=6,
         fcnet_hiddens=[1024, 128],
@@ -140,7 +140,7 @@ for i in range(10):
     print(mean_reward)
     print(std_reward)
     all_mean_rewards.append(mean_reward)
-    if mean_reward > 0:
+    if mean_reward > 150:
         model.save(
             "./mature_policies/"
             + str(num)
