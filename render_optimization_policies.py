@@ -11,7 +11,7 @@ from stable_baselines3 import PPO
 env_name = "harvest"
 n_agents = 5
 num_frames = 4
-scale = 10
+scale = 8
 
 env = pettingzoo_env.env(
     env=env_name,

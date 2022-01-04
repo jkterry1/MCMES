@@ -22,7 +22,7 @@ from social_dilemmas.envs import pettingzoo_env
 env_name = "harvest"
 n_agents = 5
 num_frames = 4
-scale = 2
+scale = 8
 
 env = pettingzoo_env.env(
     env=env_name,
