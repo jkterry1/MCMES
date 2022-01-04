@@ -15,7 +15,7 @@ import pdb
 
 num = sys.argv[1]
 n_evaluations = 20
-n_agents = 3
+n_agents = 21
 n_envs = 4
 n_timesteps = 5000000
 
@@ -44,7 +44,7 @@ def image_transpose(env):
     return env
 
 
-env = sumo_rl.ingolstadt7(sumo_warnings=False)
+env = sumo_rl.ingolstadt21(sumo_warnings=False)
 env = ss.pad_observations_v0(env)
 env = ss.pad_action_space_v0(env)
 env = ss.pettingzoo_env_to_vec_env_v1(env)
@@ -52,7 +52,7 @@ env = ss.concat_vec_envs_v1(env, n_envs, num_cpus=4, base_class="stable_baseline
 env = VecMonitor(env)
 env = image_transpose(env)
 
-eval_env = sumo_rl.ingolstadt7(sumo_warnings=False)
+eval_env = sumo_rl.ingolstadt21(sumo_warnings=False)
 eval_env = ss.pad_observations_v0(eval_env)
 eval_env = ss.pad_action_space_v0(eval_env)
 eval_env = ss.pettingzoo_env_to_vec_env_v1(eval_env)
