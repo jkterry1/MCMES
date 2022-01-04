@@ -15,7 +15,7 @@ import pdb
 
 num = sys.argv[1]
 n_evaluations = 20
-n_agents = 3
+n_agents = 7
 n_envs = 4
 n_timesteps = 5000000
 
