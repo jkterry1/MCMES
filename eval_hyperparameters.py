@@ -77,7 +77,6 @@ class CustomCNN(BaseFeaturesExtractor):
 
 activation_fn = {"tanh": F.tanh, "relu": F.relu, "elu": F.elu, "leaky_relu": F.leaky_relu}[params["activation_fn"]]
 net_arch = {"small": [dict(pi=[64, 64], vf=[64, 64])], "medium": [dict(pi=[256, 256], vf=[256, 256])], "large": [dict(pi=[400, 300], vf=[400, 300])], "extra_large": [dict(pi=[750, 750, 500], vf=[750, 750, 500])]}[params["net_arch"]]
-# fcnet_hiddens = {"small": [128, 32], "medium": [256, 64], "large": [1024, 128], "extra_large": [1024, 256]}[params["net_arch"]]
 fcnet_hiddens = [1024, 128]
 
 params["policy_kwargs"] = dict(
