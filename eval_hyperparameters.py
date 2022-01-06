@@ -98,7 +98,7 @@ for i in range(10):
         )
 
 
-if len(all_mean_rewards) > 0:
+if len(all_mean_rewards) > -.2:
     print(sum(all_mean_rewards) / len(all_mean_rewards))
 else:
     print("No mature policies found")

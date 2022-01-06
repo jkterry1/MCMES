@@ -58,7 +58,7 @@ for policy in policies:
 
         total_reward = total_reward / n_agents
 
-        if total_reward > -.1:
+        if total_reward > -.2:
             print("Rendering frames")
             name = "./mature_gifs/" + num + "_" + policy.split("_")[0] + j + '_' + str(total_reward)[:5] + ".mp4"
             subprocess.run(["ffmpeg", "-y", "-framerate", "5", "-i", cache + "%d.jpg", name])
