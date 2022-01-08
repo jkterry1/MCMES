@@ -3,10 +3,10 @@ mkdir -p ./mature_policies
 rm -rf eval_logs/*
 rm -rf mature_policies/*
 
-CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=1 nohup python3 eval_hyperparameters.py 8 &> ./eval_logs/eval_8.out &
+CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=1 nohup python3 eval_hyperparameters.py 4 &> ./eval_logs/eval_4.out &
 sleep 3
-CUDA_VISIBLE_DEVICES=1 OMP_NUM_THREADS=1 nohup python3 eval_hyperparameters.py 9 &> ./eval_logs/eval_9.out &
+CUDA_VISIBLE_DEVICES=1 OMP_NUM_THREADS=1 nohup python3 eval_hyperparameters.py 5 &> ./eval_logs/eval_5.out &
 sleep 3
-CUDA_VISIBLE_DEVICES=2 OMP_NUM_THREADS=1 nohup python3 eval_hyperparameters.py 10 &> ./eval_logs/eval_10.out &
+CUDA_VISIBLE_DEVICES=2 OMP_NUM_THREADS=1 nohup python3 eval_hyperparameters.py 6 &> ./eval_logs/eval_6.out &
 sleep 3
-CUDA_VISIBLE_DEVICES=3 OMP_NUM_THREADS=1 nohup python3 eval_hyperparameters.py 11 &> ./eval_logs/eval_11.out &
+CUDA_VISIBLE_DEVICES=3 OMP_NUM_THREADS=1 nohup python3 eval_hyperparameters.py 7 &> ./eval_logs/eval_7.out &
