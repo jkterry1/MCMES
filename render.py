@@ -19,7 +19,7 @@ num = sys.argv[1]
 #         env = VecTransposeImage(env)
 #     return env
 
-RESOLUTION = (4000, 4000)
+RESOLUTION = (7000, 7000)
 
 n_agents = 21
 
