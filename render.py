@@ -53,7 +53,7 @@ for policy in policies:
             i += 1
             if i % (len(env.possible_agents) + 1) == 0:
                 render_array = env.render(mode="rgb_array")
-                imageio.imwrite(cache + str(k) + '.jpg', render_array.astype('uint8'))
+                imageio.imwrite(cache + str(k) + '.png', render_array.astype('uint8'))
                 k = k + 1
 
         total_reward = total_reward / n_agents
@@ -61,7 +61,7 @@ for policy in policies:
         if total_reward > -.2:
             print("Rendering frames")
             name = "./mature_gifs/" + num + "_" + policy.split("_")[0] + j + '_' + str(total_reward)[:5] + ".mp4"
-            subprocess.run(["ffmpeg", "-y", "-framerate", "5", "-i", cache + "%d.jpg", name])
+            subprocess.run(["ffmpeg", "-y", "-framerate", "5", "-i", cache + "%d.png", name])
 
         # clear scratch directory
         for file in os.scandir(cache):
