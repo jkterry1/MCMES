@@ -51,10 +51,10 @@ for policy in policies:
 
                 env.step(action)
                 i += 1
-            if i % (len(env.possible_agents) + 1) == 0:
-                obs = np.transpose(env.render(mode="rgb_array"), axes=(1, 0, 2))
-                obs_scaled = zoom(obs, (scale, scale, 1), order=0)
-                obs_list.append(obs_scaled)
+                if i % (len(env.possible_agents) + 1) == 0:
+                    obs = np.transpose(env.render(mode="rgb_array"), axes=(1, 0, 2))
+                    obs_scaled = zoom(obs, (scale, scale, 1), order=0)
+                    obs_list.append(obs_scaled)
 
             break
 
