@@ -17,18 +17,19 @@ from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecTransp
 os.environ["SDL_VIDEODRIVER"] = "dummy"
 num = sys.argv[1]
 
-from social_dilemmas.envs import pettingzoo_env
+import meltingpot_env
+from meltingpot.python import substrate
 
-env_name = "harvest"
-n_agents = 5
+env_name = "commons_harvest_open"
+env_config = substrate.get_config(env_name)
+n_agents = 16
 num_frames = 4
 scale = 8
 
-env = pettingzoo_env.env(
-    env=env_name,
-    num_agents=n_agents,
+env = meltingpot_env.env(
+    env_config=env_config
 )
-env = ss.observation_lambda_v0(env, lambda x, _: x["curr_obs"], lambda s: s["curr_obs"])
+env = ss.observation_lambda_v0(env, lambda x, _: x["RGB"], lambda s: s["RGB"])
 env = ss.frame_stack_v1(env, num_frames)
 
 policies = os.listdir("./mature_policies/" + str(num) + "/")
@@ -60,7 +61,7 @@ for policy in policies:
 
         total_reward = total_reward / n_agents
 
-        if total_reward > 150:
+        if total_reward > 50:
             print("writing gif")
             write_gif(
                 obs_list, "./mature_gifs/" + num + "_" + policy.split("_")[0] + j + '_' + str(total_reward)[:5] + ".gif", fps=5

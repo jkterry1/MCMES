@@ -16,7 +16,8 @@ from optuna.integration.skopt import SkoptSampler
 from optuna.pruners import BasePruner, MedianPruner, SuccessiveHalvingPruner
 from optuna.samplers import BaseSampler, RandomSampler, TPESampler
 from optuna.visualization import plot_optimization_history, plot_param_importances
-from social_dilemmas.envs import pettingzoo_env
+import meltingpot_env
+from meltingpot.python import substrate
 
 # For using HER with GoalEnv
 from stable_baselines3 import HerReplayBuffer  # noqa: F401
@@ -537,14 +538,13 @@ class ExperimentManager(object):
         self, n_envs: int, eval_env: bool = False, no_log: bool = False
     ) -> VecEnv:
     
-        env_name = "harvest"
-        n_agents = 5
+        env_name = "commons_harvest_open"
+        env_config = substrate.get_config(env_name)
         num_frames = 4
-        env = pettingzoo_env.parallel_env(
-            env=env_name,
-            num_agents=n_agents,
+        env = meltingpot_env.parallel_env(
+            env_config=env_config,
         )
-        env = ss.observation_lambda_v0(env, lambda x, _: x["curr_obs"], lambda s: s["curr_obs"])
+        env = ss.observation_lambda_v0(env, lambda x, _: x["RGB"], lambda s: s["RGB"])
         env = ss.frame_stack_v1(env, num_frames)
         env = ss.pettingzoo_env_to_vec_env_v1(env)
         env = ss.concat_vec_envs_v1(
