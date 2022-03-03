@@ -488,7 +488,7 @@ class ExperimentManager(object):
 
     def create_envs(self, n_envs: int, eval_env: bool = False, no_log: bool = False) -> VecEnv:
         n_agents = 9
-        total_energy_j = 24212
+        total_energy_j = 24164
         total_distance_m = 894
         hz = 500
         crash_reward = -10

@@ -16,7 +16,7 @@ num = sys.argv[1]
 
 n_agents = 9
 n_envs = 4
-total_energy_j = 24212
+total_energy_j = 24164
 total_distance_m = 894
 hz = 500
 crash_reward = -10
