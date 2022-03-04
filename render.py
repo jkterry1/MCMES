@@ -1,5 +1,5 @@
 from stable_baselines3 import PPO
-import pettingzoo.butterfly.pistonball_v6 as pistonball_v6
+import pettingzoo.butterfly.pistonball_v5 as pistonball_v5
 import supersuit as ss
 from stable_baselines3.common.vec_env import VecMonitor, VecTransposeImage, VecNormalize
 from stable_baselines3.common.evaluation import evaluate_policy
@@ -23,7 +23,7 @@ num = sys.argv[1]
 #     return env
 
 
-env = pistonball_v6.env()
+env = pistonball_v5.env()
 env = ss.color_reduction_v0(env, mode="B")
 env = ss.resize_v0(env, x_size=84, y_size=84)
 env = ss.frame_stack_v1(env, 3)
