@@ -3,7 +3,7 @@ from os.path import exists
 import numpy as np
 import supersuit as ss
 from array2gif import write_gif
-from pettingzoo.butterfly import pistonball_v6
+import pettingzoo.butterfly.pistonball_v6 as pistonball_v6
 from stable_baselines3 import PPO
 
 n_agents = 20

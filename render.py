@@ -1,5 +1,5 @@
 from stable_baselines3 import PPO
-from pettingzoo.butterfly import pistonball_v6
+import pettingzoo.butterfly.pistonball_v6 as pistonball_v6
 import supersuit as ss
 from stable_baselines3.common.vec_env import VecMonitor, VecTransposeImage, VecNormalize
 from stable_baselines3.common.evaluation import evaluate_policy
