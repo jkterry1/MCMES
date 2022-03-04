@@ -1,7 +1,7 @@
 import sys
 import json
 from stable_baselines3 import PPO
-from pettingzoo.butterfly import pistonball_v5
+from pettingzoo.butterfly import pistonball_v6
 import supersuit as ss
 from stable_baselines3.common.vec_env import VecMonitor, VecTransposeImage, VecNormalize
 from stable_baselines3.common.evaluation import evaluate_policy
@@ -31,7 +31,7 @@ def image_transpose(env):
     return env
 
 
-env = pistonball_v5.parallel_env()
+env = pistonball_v6.parallel_env()
 env = ss.color_reduction_v0(env, mode="B")
 env = ss.resize_v0(env, x_size=84, y_size=84)
 env = ss.frame_stack_v1(env, 3)
@@ -40,7 +40,7 @@ env = ss.concat_vec_envs_v1(env, n_envs, num_cpus=1, base_class="stable_baseline
 env = VecMonitor(env)
 env = image_transpose(env)
 
-eval_env = pistonball_v5.parallel_env()
+eval_env = pistonball_v6.parallel_env()
 eval_env = ss.color_reduction_v0(eval_env, mode="B")
 eval_env = ss.resize_v0(eval_env, x_size=84, y_size=84)
 eval_env = ss.frame_stack_v1(eval_env, 3)
