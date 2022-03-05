@@ -653,7 +653,7 @@ class ExperimentManager(object):
             tensorboard_log=None,
             # We do not seed the trial
             seed=None,
-            verbose=0,
+            verbose=self.verbose,
             **kwargs,
         )
 
@@ -681,6 +681,8 @@ class ExperimentManager(object):
         )
 
         try:
+
+            # breakpoint()
             model.learn(self.n_timesteps, callback=eval_callback)
             # Free memory
             model.env.close()
