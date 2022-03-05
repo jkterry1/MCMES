@@ -742,6 +742,7 @@ class ExperimentManager(object):
         )
 
         try:
+            breakpoint()
             study.optimize(self.objective, n_trials=self.n_trials, n_jobs=self.n_jobs)
         except KeyboardInterrupt:
             pass
