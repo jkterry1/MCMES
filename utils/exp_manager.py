@@ -199,8 +199,6 @@ class ExperimentManager(object):
         # Create env to have access to action space for action noise
         env = self.create_envs(self.n_envs, no_log=False)
 
-        breakpoint()
-
         self._hyperparams = self._preprocess_action_noise(
             hyperparams, saved_hyperparams, env
         )
