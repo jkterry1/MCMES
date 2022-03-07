@@ -594,7 +594,7 @@ class ExperimentManager(object):
             tensorboard_log=None,
             # We do not seed the trial
             seed=None,
-            verbose=0,
+            verbose=self.verbose,
             **kwargs,
         )
 
