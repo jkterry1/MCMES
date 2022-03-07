@@ -8,8 +8,8 @@ from stable_baselines3 import PPO
 
 n_agents = 4
 
-env = knights_archers_zombies_v8.env()\
-env = ss.black_death_v2(env)
+env = knights_archers_zombies_v8.env()
+env = ss.black_death_v3(env)
 
 policies = os.listdir("./optimization_policies/")
 

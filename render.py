@@ -23,7 +23,7 @@ num = sys.argv[1]
 #     return env
 
 
-env = knights_archers_zombies_v8.env()
+env = knights_archers_zombies_v3.env()
 env = ss.black_death_v2(env)
 
 policies = os.listdir("./mature_policies/" + str(num) + "/")
