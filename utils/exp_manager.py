@@ -67,6 +67,8 @@ from utils.utils import (
 import pettingzoo.butterfly.pistonball_v6 as pistonball_v6
 import supersuit as ss
 
+from sb3_contrib.ppo_recurrent.policies import CnnLstmPolicy
+from sb3_contrib import RecurrentPPO
 
 class ExperimentManager(object):
     """
@@ -209,7 +211,10 @@ class ExperimentManager(object):
             return None
         else:
             # Train an agent from scratch
-            model = ALGOS[self.algo](
+            del self._hyperparams["policy"]
+            # model = ALGOS[self.algo](
+            model = RecurrentPPO(
+                CnnLstmPolicy,
                 env=env,
                 tensorboard_log=self.tensorboard_log,
                 seed=self.seed,
@@ -544,7 +549,7 @@ class ExperimentManager(object):
         env = pistonball_v6.parallel_env()
         env = ss.color_reduction_v0(env, mode="B")
         env = ss.resize_v0(env, x_size=84, y_size=84, linear_interp=True)
-        env = ss.frame_stack_v1(env, 3)
+        env = ss.frame_stack_v1(env, 1)
         env = ss.pettingzoo_env_to_vec_env_v1(env)
         print(n_envs)
         env = ss.concat_vec_envs_v1(
@@ -574,7 +579,8 @@ class ExperimentManager(object):
         if "policy_kwargs" in hyperparams.keys():
             del hyperparams["policy_kwargs"]
 
-        model = ALGOS[self.algo].load(
+        # model = ALGOS[self.algo].load(
+        model = RecurrentPPO.load(
             self.trained_agent,
             env=env,
             seed=self.seed,
@@ -648,7 +654,10 @@ class ExperimentManager(object):
         sampled_hyperparams = HYPERPARAMS_SAMPLER[self.algo](trial)
         kwargs.update(sampled_hyperparams)
 
-        model = ALGOS[self.algo](
+        del kwargs["policy"]
+        # model = ALGOS[self.algo](
+        model = RecurrentPPO(
+            CnnLstmPolicy,
             env=self.create_envs(self.n_envs, no_log=True),
             tensorboard_log=None,
             # We do not seed the trial
