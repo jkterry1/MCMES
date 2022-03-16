@@ -64,9 +64,11 @@ from utils.utils import (
     linear_schedule,
 )
 
-from pettingzoo.butterfly import knights_archers_zombies_v8
+from pettingzoo.butterfly import knights_archers_zombies_v9
 import supersuit as ss
 
+from sb3_contrib.ppo_recurrent.policies import MlpLstmPolicy
+from sb3_contrib import RecurrentPPO
 
 class ExperimentManager(object):
     """
@@ -209,7 +211,10 @@ class ExperimentManager(object):
             return None
         else:
             # Train an agent from scratch
-            model = ALGOS[self.algo](
+            del self._hyperparams["policy"]
+            # model = ALGOS[self.algo](
+            model = RecurrentPPO(
+                MlpLstmPolicy,
                 env=env,
                 tensorboard_log=self.tensorboard_log,
                 seed=self.seed,
@@ -541,7 +546,7 @@ class ExperimentManager(object):
         self, n_envs: int, eval_env: bool = False, no_log: bool = False
     ) -> VecEnv:
 
-        env = knights_archers_zombies_v8.parallel_env()
+        env = knights_archers_zombies_v9.parallel_env()
         env = ss.frame_stack_v1(env, 3)
         env = ss.black_death_v2(env)
         env = ss.pettingzoo_env_to_vec_env_v1(env)
@@ -573,7 +578,8 @@ class ExperimentManager(object):
         if "policy_kwargs" in hyperparams.keys():
             del hyperparams["policy_kwargs"]
 
-        model = ALGOS[self.algo].load(
+        # model = ALGOS[self.algo].load(
+        model = RecurrentPPO.load(
             self.trained_agent,
             env=env,
             seed=self.seed,
@@ -647,12 +653,15 @@ class ExperimentManager(object):
         sampled_hyperparams = HYPERPARAMS_SAMPLER[self.algo](trial)
         kwargs.update(sampled_hyperparams)
 
-        model = ALGOS[self.algo](
+        del kwargs["policy"]
+        # model = ALGOS[self.algo](
+        model = RecurrentPPO(
+            MlpLstmPolicy,
             env=self.create_envs(self.n_envs, no_log=True),
             tensorboard_log=None,
             # We do not seed the trial
             seed=None,
-            verbose=0,
+            verbose=self.verbose,
             **kwargs,
         )
 
