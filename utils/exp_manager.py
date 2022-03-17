@@ -65,6 +65,7 @@ from utils.utils import (
 )
 
 from pettingzoo.butterfly import knights_archers_zombies_v9
+import fle.flocking_env as flocking_env
 import supersuit as ss
 
 from sb3_contrib.ppo_recurrent.policies import MlpLstmPolicy
@@ -546,26 +547,40 @@ class ExperimentManager(object):
         self, n_envs: int, eval_env: bool = False, no_log: bool = False
     ) -> VecEnv:
 
-        env = knights_archers_zombies_v9.parallel_env()
-        env = ss.frame_stack_v1(env, 3)
-        env = ss.black_death_v2(env)
-        env = ss.pettingzoo_env_to_vec_env_v1(env)
-        print(n_envs)
-        env = ss.concat_vec_envs_v1(
-            env, n_envs, num_cpus=4, base_class="stable_baselines3"
+        n_agents = 9
+        total_energy_j = 24212
+        total_distance_m = 894
+        hz = 500
+        crash_reward = -10
+        nerve_impulse_hz = 200
+        reaction_frames = 0
+        distance_reward_per_m = 100 / total_distance_m
+        energy_reward_per_j = -10 / total_energy_j
+        skip_frames = int(hz / nerve_impulse_hz)
+
+        env = flocking_env.parallel_env(
+            N=n_agents,
+            h=1 / hz,
+            energy_reward=energy_reward_per_j,
+            forward_reward=distance_reward_per_m,
+            crash_reward=crash_reward,
+            LIA=True,
         )
+        env = ss.delay_observations_v0(env, reaction_frames)
+        env = ss.frame_skip_v0(env, skip_frames)
+        env = ss.pettingzoo_env_to_vec_env_v1(env)
+        env = ss.concat_vec_envs_v1(env, n_envs, num_cpus=1, base_class="stable_baselines3")
         env = VecMonitor(env)
 
         env = self._maybe_normalize(env, eval_env)
 
-        if is_image_space(env.observation_space) and not is_image_space_channels_first(
-            env.observation_space
-        ):
+        if is_image_space(env.observation_space) and not is_image_space_channels_first(env.observation_space):
             if self.verbose > 0:
                 print("Wrapping into a VecTransposeImage")
             env = VecTransposeImage(env)
 
         return env
+
 
     def _load_pretrained_agent(
         self, hyperparams: Dict[str, Any], env: VecEnv
