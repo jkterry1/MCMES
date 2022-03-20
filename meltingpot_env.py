@@ -113,7 +113,7 @@ class MeltingPotPettingZooEnv(ParallelEnv):
         for index, agent in enumerate(self.agents)
     }
     self.num_cycles += 1
-    done = timestep.last() or self.num_cycles >= self.max_cycles 
+    done = timestep.last() or self.num_cycles >= self.max_cycles
     dones = {agent: done for agent in self.agents}
     infos = {agent: {} for agent in self.agents}
     if done:
@@ -129,7 +129,7 @@ class MeltingPotPettingZooEnv(ParallelEnv):
   def seed(self, seed=None):
     raise NotImplementedError
   
-  def render(self, filename=None, mode="human"):
+  def render(self, mode="human", filename=None):
     rgb_arr = self.state()['WORLD.RGB']
     if mode == "human":
         plt.cla()

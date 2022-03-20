@@ -16,11 +16,11 @@ import meltingpot_env
 from meltingpot.python import substrate
 
 num = sys.argv[1]
-n_evaluations = 20
+n_evaluations = 100
 n_agents = 16
 n_cpus = 4
 n_envs = 8
-n_timesteps = 16000000
+n_timesteps = 4000000
 env_name = "commons_harvest_open"
 env_config = substrate.get_config(env_name)
 
@@ -44,6 +44,7 @@ class CustomCNN(BaseFeaturesExtractor):
         observation_space: gym.spaces.Box,
         features_dim=256,
         num_frames=4,
+        activation_fn=nn.ReLU,
     ):
         super(CustomCNN, self).__init__(observation_space, features_dim)
         # We assume CxHxW images (channels first)
@@ -51,22 +52,25 @@ class CustomCNN(BaseFeaturesExtractor):
 
         self.conv = nn.Sequential(
             nn.Conv2d(num_frames * 3, num_frames * 6, kernel_size=8, stride=4, padding=0),
-            nn.ReLU(), # 24 * 21 * 21
+            activation_fn(), # 24 * 21 * 21
             nn.Conv2d(num_frames * 6, num_frames * 12, kernel_size=5, stride=2, padding=0),
-            nn.ReLU(), # 48 * 9 * 9
+            activation_fn(), # 48 * 9 * 9
             nn.Flatten()
         )
         flat_out = num_frames * 12 * 9 * 9
-        self.fc = nn.Linear(in_features=flat_out, out_features=features_dim)
+        self.fc = nn.Sequential(
+            nn.Linear(in_features=flat_out, out_features=features_dim),
+            activation_fn(),
+        )
 
     def forward(self, observations) -> torch.Tensor:
         # Convert to tensor, rescale to [0, 1], and convert from B x H x W x C to B x C x H x W
         observations = observations.permute(0, 3, 1, 2)
         features = self.conv(observations)
-        features = F.relu(self.fc(features))
+        features = self.fc(features)
         return features
 
-activation_fn = {"tanh": F.tanh, "relu": F.relu, "elu": F.elu, "leaky_relu": F.leaky_relu}[params["activation_fn"]]
+activation_fn = {"tanh": nn.Tanh, "relu": nn.ReLU, "elu": nn.ELU, "leaky_relu": nn.LeakyReLU}[params["activation_fn"]]
 net_arch = {"small": [dict(pi=[32, 32], vf=[32, 32])], "medium": [dict(pi=[128, 64], vf=[128, 64])], "large": [dict(pi=[256, 256], vf=[256, 256])], "extra_large": [dict(pi=[1024, 512, 256], vf=[1024, 512, 256])]}[params["net_arch"]]
 
 params["policy_kwargs"] = dict(
@@ -88,19 +92,19 @@ env = ss.observation_lambda_v0(env, lambda x, _: x["RGB"], lambda s: s["RGB"])
 env = ss.frame_stack_v1(env, num_frames)
 env = ss.pettingzoo_env_to_vec_env_v1(env)
 env = ss.concat_vec_envs_v1(env, n_envs, num_cpus=n_cpus, base_class="stable_baselines3")
-env = VecTransposeImage(env)
+env = VecTransposeImage(env, skip=True)
 env = VecMonitor(env)
 
 eval_env = meltingpot_env.parallel_env(
     env_config=env_config
 )
-eval_env = ss.observation_lambda_v0(env, lambda x, _: x["RGB"], lambda s: s["RGB"])
+eval_env = ss.observation_lambda_v0(eval_env, lambda x, _: x["RGB"], lambda s: s["RGB"])
 eval_env = ss.frame_stack_v1(eval_env, num_frames)
 eval_env = ss.pettingzoo_env_to_vec_env_v1(eval_env)
 eval_env = ss.concat_vec_envs_v1(
     eval_env, 1, num_cpus=n_cpus, base_class="stable_baselines3"
 )
-eval_env = VecTransposeImage(eval_env)
+eval_env = VecTransposeImage(eval_env, skip=True)
 eval_env = VecMonitor(eval_env)
 
 eval_freq = int(n_timesteps / n_evaluations)
@@ -126,7 +130,7 @@ for i in range(10):
     print(mean_reward)
     print(std_reward)
     all_mean_rewards.append(mean_reward)
-    if mean_reward > 150:
+    if mean_reward > 40:
         model.save(
             "./mature_policies/"
             + str(num)
