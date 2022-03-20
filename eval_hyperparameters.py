@@ -16,7 +16,7 @@ import meltingpot_env
 from meltingpot.python import substrate
 
 num = sys.argv[1]
-n_evaluations = 100
+n_evaluations = 20
 n_agents = 16
 n_cpus = 4
 n_envs = 8
