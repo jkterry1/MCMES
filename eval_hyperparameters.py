@@ -20,7 +20,7 @@ n_evaluations = 20
 n_agents = 16
 n_cpus = 4
 n_envs = 8
-n_timesteps = 4000000
+n_timesteps = 2000000
 env_name = "commons_harvest_open"
 env_config = substrate.get_config(env_name)
 
