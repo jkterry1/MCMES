@@ -1,3 +1,5 @@
+#!/bin/sh
+
 mkdir -p ./hyperparameter_jsons
 rm -rf hyperparameter_jsons/*
 

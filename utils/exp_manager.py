@@ -703,6 +703,8 @@ class ExperimentManager(object):
         )
 
         try:
+
+            # breakpoint()
             model.learn(self.n_timesteps, callback=eval_callback)
             # Free memory
             model.env.close()
@@ -764,6 +766,7 @@ class ExperimentManager(object):
         )
 
         try:
+            # breakpoint()
             study.optimize(self.objective, n_trials=self.n_trials, n_jobs=self.n_jobs)
         except KeyboardInterrupt:
             pass

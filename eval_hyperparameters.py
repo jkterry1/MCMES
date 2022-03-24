@@ -31,6 +31,7 @@ def image_transpose(env):
     return env
 
 
+<<<<<<< HEAD
 def create_envs(n_envs: int, eval_env: bool = False, no_log: bool = False):
 
     n_agents = 9
@@ -68,7 +69,6 @@ def create_envs(n_envs: int, eval_env: bool = False, no_log: bool = False):
     return env
 
 env = create_envs(n_envs)
-
 eval_env = create_envs(n_envs, eval_env=True)
 
 eval_freq = int(n_timesteps / n_evaluations)
