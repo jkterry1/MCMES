@@ -1,7 +1,7 @@
 import sys
 import json
 from stable_baselines3 import PPO
-from pettingzoo.butterfly import knights_archers_zombies_v8
+import fle.flocking_env as flocking_env
 import supersuit as ss
 from stable_baselines3.common.vec_env import VecMonitor, VecTransposeImage, VecNormalize
 from stable_baselines3.common.evaluation import evaluate_policy
@@ -31,23 +31,45 @@ def image_transpose(env):
     return env
 
 
-env = knights_archers_zombies_v8.parallel_env()
-env = ss.frame_stack_v1(env, 3)
-env = ss.black_death_v2(env)
-env = ss.pettingzoo_env_to_vec_env_v1(env)
-env = ss.concat_vec_envs_v1(env, n_envs, num_cpus=1, base_class="stable_baselines3")
-env = VecMonitor(env)
-env = image_transpose(env)
+def create_envs(n_envs: int, eval_env: bool = False, no_log: bool = False):
 
-eval_env = knights_archers_zombies_v8.parallel_env()    
-eval_env = ss.frame_stack_v1(eval_env, 3)
-eval_env = ss.black_death_v2(eval_env)
-eval_env = ss.pettingzoo_env_to_vec_env_v1(eval_env)
-eval_env = ss.concat_vec_envs_v1(
-    eval_env, 1, num_cpus=1, base_class="stable_baselines3"
-)
-eval_env = VecMonitor(eval_env)
-eval_env = image_transpose(eval_env)
+    n_agents = 9
+    total_energy_j = 24212
+    total_distance_m = 894
+    hz = 500
+    crash_reward = -10
+    nerve_impulse_hz = 200
+    reaction_frames = 0
+    distance_reward_per_m = 100 / total_distance_m
+    energy_reward_per_j = -10 / total_energy_j
+    skip_frames = int(hz / nerve_impulse_hz)
+
+    env = flocking_env.parallel_env(
+        N=n_agents,
+        h=1 / hz,
+        energy_reward=energy_reward_per_j,
+        forward_reward=distance_reward_per_m,
+        crash_reward=crash_reward,
+        LIA=True,
+    )
+    env = ss.delay_observations_v0(env, reaction_frames)
+    env = ss.frame_skip_v0(env, skip_frames)
+    env = ss.pettingzoo_env_to_vec_env_v1(env)
+    env = ss.concat_vec_envs_v1(env, n_envs, num_cpus=1, base_class="stable_baselines3")
+    env = VecMonitor(env)
+
+    env = self._maybe_normalize(env, eval_env)
+
+    if is_image_space(env.observation_space) and not is_image_space_channels_first(env.observation_space):
+        if self.verbose > 0:
+            print("Wrapping into a VecTransposeImage")
+        env = VecTransposeImage(env)
+
+    return env
+
+env = create_envs(n_envs)
+
+eval_env = create_envs(n_envs, eval_env=True)
 
 eval_freq = int(n_timesteps / n_evaluations)
 eval_freq = max(eval_freq // (n_envs * n_agents), 1)

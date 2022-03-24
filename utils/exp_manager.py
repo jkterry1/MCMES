@@ -64,7 +64,6 @@ from utils.utils import (
     linear_schedule,
 )
 
-from pettingzoo.butterfly import knights_archers_zombies_v9
 import fle.flocking_env as flocking_env
 import supersuit as ss
 
