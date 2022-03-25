@@ -42,6 +42,7 @@
 
 ### Documentation
 - Updated README (dict obs are now supported)
+- Clarify n-trials doc string
 
 ### Other
 - Added `is_bullet()` to `ExperimentManager`

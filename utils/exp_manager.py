@@ -7,9 +7,12 @@ from collections import OrderedDict
 from pprint import pprint
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
+import fle.flocking_env as flocking_env
+import magent
 import gym
 import numpy as np
 import optuna
+import supersuit as ss
 import yaml
 from optuna.integration.skopt import SkoptSampler
 from optuna.pruners import BasePruner, MedianPruner, SuccessiveHalvingPruner
@@ -26,27 +29,18 @@ from stable_baselines3.common.callbacks import (
 )
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.monitor import Monitor
-
-from stable_baselines3.common.noise import (
-    NormalActionNoise,
-    OrnsteinUhlenbeckActionNoise,
-)
-from stable_baselines3.common.preprocessing import (
-    is_image_space,
-    is_image_space_channels_first,
-)
-from stable_baselines3.common.sb2_compat.rmsprop_tf_like import (
-    RMSpropTFLike,
-)  # noqa: F401
+from stable_baselines3.common.noise import NormalActionNoise, OrnsteinUhlenbeckActionNoise
+from stable_baselines3.common.preprocessing import is_image_space, is_image_space_channels_first
+from stable_baselines3.common.sb2_compat.rmsprop_tf_like import RMSpropTFLike  # noqa: F401
 from stable_baselines3.common.utils import constant_fn
 from stable_baselines3.common.vec_env import (
     DummyVecEnv,
     SubprocVecEnv,
     VecEnv,
     VecFrameStack,
+    VecMonitor,
     VecNormalize,
     VecTransposeImage,
-    VecMonitor,
 )
 
 # For custom activation fn
@@ -542,12 +536,9 @@ class ExperimentManager(object):
             env = VecNormalize(env, **local_normalize_kwargs)
         return env
 
-    def create_envs(
-        self, n_envs: int, eval_env: bool = False, no_log: bool = False
-    ) -> VecEnv:
-
+    def create_envs(self, n_envs: int, eval_env: bool = False, no_log: bool = False) -> VecEnv:
         n_agents = 9
-        total_energy_j = 24212
+        total_energy_j = 24164
         total_distance_m = 894
         hz = 500
         crash_reward = -10
@@ -679,13 +670,11 @@ class ExperimentManager(object):
             **kwargs,
         )
 
-        model.trial = trial
-
         eval_env = self.create_envs(n_envs=self.n_eval_envs, eval_env=True)
 
         optuna_eval_freq = int(self.n_timesteps / self.n_evaluations)
         # Account for parallel envs
-        optuna_eval_freq = max(optuna_eval_freq // (20 * 4), 1)
+        optuna_eval_freq = max(optuna_eval_freq // (9 * 4), 1)
         # Use non-deterministic eval for Atari
         path = None
         if self.optimization_log_path is not None:
@@ -703,8 +692,6 @@ class ExperimentManager(object):
         )
 
         try:
-
-            # breakpoint()
             model.learn(self.n_timesteps, callback=eval_callback)
             # Free memory
             model.env.close()

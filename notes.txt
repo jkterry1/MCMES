@@ -1,4 +1,4 @@
-kaz1
+flocking1
 
 ./run_optimize.sh [name] # run on each to get parameters in DB
 
@@ -11,19 +11,25 @@ kaz1
 ./run_render_optimization.sh # generates gifs from policeis logged during optimization if something weird happens
 
 
-Todo:
-Fix rendering logic
-
 
 For new runs:
 Change DB name
 Change mature saving treshhold
-Change env in evaluation, rendering and training files
+Change env in evaluation, rendering and optimization files
 Change neural networks (bird flocking)
 Change number of steps
+Fix render for bird flocking
 
-Weekly match: top left, with table on left and other shit on right. Only left thing scrolls
 
 
-Leaderboard: 2x4 page of top 8 games that show you the match against player 1 and 2 of that game last week as gifs and link to specific leaderboard pages
+OMP_NUM_THREADS=1 python3 train.py --algo ppo --env LunarLanderContinuous-v2 -n 2000000 -optimize --n-trials 150 --sampler tpe --pruner median --study-name pistonball23 --storage mysql://root:dummy@10.128.0.28/pistonball23
 
+
+
+
+
+ &> ./render_logs/render_2.out &
+
+
+
+CUDA_VISIBLE_DEVICES=1 OMP_NUM_THREADS=1 python3 render.py 2

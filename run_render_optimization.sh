@@ -1,4 +1,4 @@
-mkdir -p ./optimization_gifs
-rm -rf optimization_gifs/*
+mkdir -p ./results
+rm -rf results/*
 
-python3 render_optimization_policies.py
+OMP_NUM_THREADS=1 nohup python3 render_optimization_policies.py &> ./render_optimization_logs.out &
