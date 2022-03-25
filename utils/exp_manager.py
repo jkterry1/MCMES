@@ -38,9 +38,9 @@ from stable_baselines3.common.vec_env import (
     SubprocVecEnv,
     VecEnv,
     VecFrameStack,
-    VecMonitor,
     VecNormalize,
     VecTransposeImage,
+    VecMonitor,
 )
 
 # For custom activation fn
@@ -560,6 +560,7 @@ class ExperimentManager(object):
         env = ss.frame_skip_v0(env, skip_frames)
         env = ss.pettingzoo_env_to_vec_env_v1(env)
         env = ss.concat_vec_envs_v1(env, n_envs, num_cpus=1, base_class="stable_baselines3")
+        print(n_envs)
         env = VecMonitor(env)
 
         env = self._maybe_normalize(env, eval_env)
@@ -570,7 +571,6 @@ class ExperimentManager(object):
             env = VecTransposeImage(env)
 
         return env
-
 
     def _load_pretrained_agent(
         self, hyperparams: Dict[str, Any], env: VecEnv
