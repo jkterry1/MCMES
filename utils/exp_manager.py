@@ -22,7 +22,11 @@ from optuna.visualization import plot_optimization_history, plot_param_importanc
 # For using HER with GoalEnv
 from stable_baselines3 import HerReplayBuffer  # noqa: F401
 from stable_baselines3.common.base_class import BaseAlgorithm
-from stable_baselines3.common.callbacks import BaseCallback, CheckpointCallback, EvalCallback
+from stable_baselines3.common.callbacks import (
+    BaseCallback,
+    CheckpointCallback,
+    EvalCallback,
+)
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.noise import NormalActionNoise, OrnsteinUhlenbeckActionNoise
@@ -46,8 +50,19 @@ from torch import nn as nn  # noqa: F401
 import utils.import_envs  # noqa: F401 pytype: disable=import-error
 from utils.callbacks import SaveVecNormalizeCallback, TrialEvalCallback
 from utils.hyperparams_opt import HYPERPARAMS_SAMPLER
-from utils.utils import ALGOS, get_callback_list, get_latest_run_id, get_wrapper_class, linear_schedule
+from utils.utils import (
+    ALGOS,
+    get_callback_list,
+    get_latest_run_id,
+    get_wrapper_class,
+    linear_schedule,
+)
 
+import fle.flocking_env as flocking_env
+import supersuit as ss
+
+from sb3_contrib.ppo_recurrent.policies import MlpLstmPolicy
+from sb3_contrib import RecurrentPPO
 
 class ExperimentManager(object):
     """
@@ -105,7 +120,9 @@ class ExperimentManager(object):
         self.seed = seed
         self.optimization_log_path = optimization_log_path
 
-        self.vec_env_class = {"dummy": DummyVecEnv, "subproc": SubprocVecEnv}[vec_env_type]
+        self.vec_env_class = {"dummy": DummyVecEnv, "subproc": SubprocVecEnv}[
+            vec_env_type
+        ]
 
         self.vec_env_kwargs = {}
         # self.vec_env_kwargs = {} if vec_env_type == "dummy" else {"start_method": "fork"}
@@ -122,7 +139,9 @@ class ExperimentManager(object):
         self._hyperparams = {}
 
         self.trained_agent = trained_agent
-        self.continue_training = trained_agent.endswith(".zip") and os.path.isfile(trained_agent)
+        self.continue_training = trained_agent.endswith(".zip") and os.path.isfile(
+            trained_agent
+        )
         self.truncate_last_trajectory = truncate_last_trajectory
 
         self._is_atari = self.is_atari(env_id)
@@ -143,7 +162,9 @@ class ExperimentManager(object):
 
         # Logging
         self.log_folder = log_folder
-        self.tensorboard_log = None if tensorboard_log == "" else os.path.join(tensorboard_log, env_id)
+        self.tensorboard_log = (
+            None if tensorboard_log == "" else os.path.join(tensorboard_log, env_id)
+        )
         self.verbose = verbose
         self.args = args
         self.log_interval = log_interval
@@ -151,7 +172,8 @@ class ExperimentManager(object):
 
         self.log_path = f"{log_folder}/{self.algo}/"
         self.save_path = os.path.join(
-            self.log_path, f"{self.env_id}_{get_latest_run_id(self.log_path, self.env_id) + 1}{uuid_str}"
+            self.log_path,
+            f"{self.env_id}_{get_latest_run_id(self.log_path, self.env_id) + 1}{uuid_str}",
         )
         self.params_path = f"{self.save_path}/{self.env_id}"
 
@@ -163,7 +185,9 @@ class ExperimentManager(object):
         :return: the initialized RL model
         """
         hyperparams, saved_hyperparams = self.read_hyperparameters()
-        hyperparams, self.env_wrapper, self.callbacks = self._preprocess_hyperparams(hyperparams)
+        hyperparams, self.env_wrapper, self.callbacks = self._preprocess_hyperparams(
+            hyperparams
+        )
 
         self.create_log_folder()
         self.create_callbacks()
@@ -171,7 +195,9 @@ class ExperimentManager(object):
         # Create env to have access to action space for action noise
         env = self.create_envs(self.n_envs, no_log=False)
 
-        self._hyperparams = self._preprocess_action_noise(hyperparams, saved_hyperparams, env)
+        self._hyperparams = self._preprocess_action_noise(
+            hyperparams, saved_hyperparams, env
+        )
 
         if self.continue_training:
             model = self._load_pretrained_agent(self._hyperparams, env)
@@ -179,7 +205,10 @@ class ExperimentManager(object):
             return None
         else:
             # Train an agent from scratch
-            model = ALGOS[self.algo](
+            del self._hyperparams["policy"]
+            # model = ALGOS[self.algo](
+            model = RecurrentPPO(
+                MlpLstmPolicy,
                 env=env,
                 tensorboard_log=self.tensorboard_log,
                 seed=self.seed,
@@ -229,7 +258,9 @@ class ExperimentManager(object):
 
         if self.normalize:
             # Important: save the running average, for testing the agent we need that normalization
-            model.get_vec_normalize_env().save(os.path.join(self.params_path, "vecnormalize.pkl"))
+            model.get_vec_normalize_env().save(
+                os.path.join(self.params_path, "vecnormalize.pkl")
+            )
 
     def _save_config(self, saved_hyperparams: Dict[str, Any]) -> None:
         """
@@ -244,7 +275,9 @@ class ExperimentManager(object):
 
         # save command line arguments
         with open(os.path.join(self.params_path, "args.yml"), "w") as f:
-            ordered_args = OrderedDict([(key, vars(self.args)[key]) for key in sorted(vars(self.args).keys())])
+            ordered_args = OrderedDict(
+                [(key, vars(self.args)[key]) for key in sorted(vars(self.args).keys())]
+            )
             yaml.dump(ordered_args, f)
 
         print(f"Log path: {self.save_path}")
@@ -258,16 +291,22 @@ class ExperimentManager(object):
             elif self._is_atari:
                 hyperparams = hyperparams_dict["atari"]
             else:
-                raise ValueError(f"Hyperparameters not found for {self.algo}-{self.env_id}")
+                raise ValueError(
+                    f"Hyperparameters not found for {self.algo}-{self.env_id}"
+                )
 
         if self.custom_hyperparams is not None:
             # Overwrite hyperparams if needed
             hyperparams.update(self.custom_hyperparams)
         # Sort hyperparams that will be saved
-        saved_hyperparams = OrderedDict([(key, hyperparams[key]) for key in sorted(hyperparams.keys())])
+        saved_hyperparams = OrderedDict(
+            [(key, hyperparams[key]) for key in sorted(hyperparams.keys())]
+        )
 
         if self.verbose > 0:
-            print("Default hyperparameters for environment (ones being tuned will be overridden):")
+            print(
+                "Default hyperparameters for environment (ones being tuned will be overridden):"
+            )
             pprint(saved_hyperparams)
 
         return hyperparams, saved_hyperparams
@@ -338,8 +377,14 @@ class ExperimentManager(object):
 
         # Pre-process policy/buffer keyword arguments
         # Convert to python object if needed
-        for kwargs_key in {"policy_kwargs", "replay_buffer_class", "replay_buffer_kwargs"}:
-            if kwargs_key in hyperparams.keys() and isinstance(hyperparams[kwargs_key], str):
+        for kwargs_key in {
+            "policy_kwargs",
+            "replay_buffer_class",
+            "replay_buffer_kwargs",
+        }:
+            if kwargs_key in hyperparams.keys() and isinstance(
+                hyperparams[kwargs_key], str
+            ):
                 hyperparams[kwargs_key] = eval(hyperparams[kwargs_key])
 
         # Delete keys so the dict can be pass to the model constructor
@@ -364,7 +409,10 @@ class ExperimentManager(object):
         return hyperparams, env_wrapper, callbacks
 
     def _preprocess_action_noise(
-        self, hyperparams: Dict[str, Any], saved_hyperparams: Dict[str, Any], env: VecEnv
+        self,
+        hyperparams: Dict[str, Any],
+        saved_hyperparams: Dict[str, Any],
+        env: VecEnv,
     ) -> Dict[str, Any]:
         # Parse noise string
         # Note: only off-policy algorithms are supported
@@ -420,7 +468,9 @@ class ExperimentManager(object):
             if self.verbose > 0:
                 print("Creating test environment")
 
-            save_vec_normalize = SaveVecNormalizeCallback(save_freq=1, save_path=self.params_path)
+            save_vec_normalize = SaveVecNormalizeCallback(
+                save_freq=1, save_path=self.params_path
+            )
             eval_callback = EvalCallback(
                 self.create_envs(self.n_eval_envs, eval_env=True),
                 callback_on_new_best=save_vec_normalize,
@@ -521,7 +571,10 @@ class ExperimentManager(object):
 
         return env
 
-    def _load_pretrained_agent(self, hyperparams: Dict[str, Any], env: VecEnv) -> BaseAlgorithm:
+
+    def _load_pretrained_agent(
+        self, hyperparams: Dict[str, Any], env: VecEnv
+    ) -> BaseAlgorithm:
         # Continue training
         print("Loading pretrained agent")
         # Policy should not be changed
@@ -530,7 +583,8 @@ class ExperimentManager(object):
         if "policy_kwargs" in hyperparams.keys():
             del hyperparams["policy_kwargs"]
 
-        model = ALGOS[self.algo].load(
+        # model = ALGOS[self.algo].load(
+        model = RecurrentPPO.load(
             self.trained_agent,
             env=env,
             seed=self.seed,
@@ -539,12 +593,16 @@ class ExperimentManager(object):
             **hyperparams,
         )
 
-        replay_buffer_path = os.path.join(os.path.dirname(self.trained_agent), "replay_buffer.pkl")
+        replay_buffer_path = os.path.join(
+            os.path.dirname(self.trained_agent), "replay_buffer.pkl"
+        )
 
         if os.path.exists(replay_buffer_path):
             print("Loading replay buffer")
             # `truncate_last_traj` will be taken into account only if we use HER replay buffer
-            model.load_replay_buffer(replay_buffer_path, truncate_last_traj=self.truncate_last_trajectory)
+            model.load_replay_buffer(
+                replay_buffer_path, truncate_last_traj=self.truncate_last_trajectory
+            )
         return model
 
     def _create_sampler(self, sampler_method: str) -> BaseSampler:
@@ -558,19 +616,28 @@ class ExperimentManager(object):
             # cf https://scikit-optimize.github.io/#skopt.Optimizer
             # GP: gaussian process
             # Gradient boosted regression: GBRT
-            sampler = SkoptSampler(skopt_kwargs={"base_estimator": "GP", "acq_func": "gp_hedge"})
+            sampler = SkoptSampler(
+                skopt_kwargs={"base_estimator": "GP", "acq_func": "gp_hedge"}
+            )
         else:
             raise ValueError(f"Unknown sampler: {sampler_method}")
         return sampler
 
     def _create_pruner(self, pruner_method: str) -> BasePruner:
         if pruner_method == "halving":
-            pruner = SuccessiveHalvingPruner(min_resource=1, reduction_factor=4, min_early_stopping_rate=0)
+            pruner = SuccessiveHalvingPruner(
+                min_resource=1, reduction_factor=4, min_early_stopping_rate=0
+            )
         elif pruner_method == "median":
-            pruner = MedianPruner(n_startup_trials=self.n_startup_trials, n_warmup_steps=self.n_evaluations // 3)
+            pruner = MedianPruner(
+                n_startup_trials=self.n_startup_trials,
+                n_warmup_steps=self.n_evaluations // 3,
+            )
         elif pruner_method == "none":
             # Do not prune
-            pruner = MedianPruner(n_startup_trials=self.n_trials, n_warmup_steps=self.n_evaluations)
+            pruner = MedianPruner(
+                n_startup_trials=self.n_trials, n_warmup_steps=self.n_evaluations
+            )
         else:
             raise ValueError(f"Unknown pruner: {pruner_method}")
         return pruner
@@ -582,14 +649,19 @@ class ExperimentManager(object):
         # Hack to use DDPG/TD3 noise sampler
         trial.n_actions = self.n_actions
         # Hack when using HerReplayBuffer
-        trial.using_her_replay_buffer = kwargs.get("replay_buffer_class") == HerReplayBuffer
+        trial.using_her_replay_buffer = (
+            kwargs.get("replay_buffer_class") == HerReplayBuffer
+        )
         if trial.using_her_replay_buffer:
             trial.her_kwargs = kwargs.get("replay_buffer_kwargs", {})
         # Sample candidate hyperparameters
         sampled_hyperparams = HYPERPARAMS_SAMPLER[self.algo](trial)
         kwargs.update(sampled_hyperparams)
 
-        model = ALGOS[self.algo](
+        del kwargs["policy"]
+        # model = ALGOS[self.algo](
+        model = RecurrentPPO(
+            MlpLstmPolicy,
             env=self.create_envs(self.n_envs, no_log=True),
             tensorboard_log=None,
             # We do not seed the trial
@@ -606,7 +678,9 @@ class ExperimentManager(object):
         # Use non-deterministic eval for Atari
         path = None
         if self.optimization_log_path is not None:
-            path = os.path.join(self.optimization_log_path, f"trial_{str(trial.number)}")
+            path = os.path.join(
+                self.optimization_log_path, f"trial_{str(trial.number)}"
+            )
         eval_callback = TrialEvalCallback(
             eval_env,
             trial,
@@ -657,7 +731,9 @@ class ExperimentManager(object):
             )
 
         if self.tensorboard_log is not None:
-            warnings.warn("Tensorboard log is deactivated when running hyperparameter optimization")
+            warnings.warn(
+                "Tensorboard log is deactivated when running hyperparameter optimization"
+            )
             self.tensorboard_log = None
 
         # TODO: eval each hyperparams several times to account for noisy evaluation
@@ -677,6 +753,7 @@ class ExperimentManager(object):
         )
 
         try:
+            # breakpoint()
             study.optimize(self.objective, n_trials=self.n_trials, n_jobs=self.n_jobs)
         except KeyboardInterrupt:
             pass

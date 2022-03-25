@@ -8,6 +8,7 @@ flocking1
 
 ./run_render[n].sh # generate saved gifs
 
+./run_render_optimization.sh # generates gifs from policeis logged during optimization if something weird happens
 
 
 
@@ -25,14 +26,10 @@ OMP_NUM_THREADS=1 python3 train.py --algo ppo --env LunarLanderContinuous-v2 -n 
 
 
 
-OMP_NUM_THREADS=1 python3 train.py --algo ppo --env LunarLanderContinuous-v2 -n 2000000 -optimize --n-trials 150 --sampler tpe --pruner median --study-name pistonball23 --storage mysql://root:dummy@10.128.0.28/pistonball23
-
-
-CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=1 python3 eval_hyperparameters.py 0
 
 
  &> ./render_logs/render_2.out &
 
 
 
-CUDA_VISIBLE_DEVICES=1 OMP_NUM_THREADS=1 python3 render.py 2 
+CUDA_VISIBLE_DEVICES=1 OMP_NUM_THREADS=1 python3 render.py 2

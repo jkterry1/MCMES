@@ -1,4 +1,3 @@
-
 CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=1 nohup python3 eval_hyperparameters.py 4 &> ./eval_logs/eval_4.out &
 sleep 3
 CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=1 nohup python3 eval_hyperparameters.py 5 &> ./eval_logs/eval_5.out &

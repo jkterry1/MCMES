@@ -1,5 +1,9 @@
+#!/bin/sh
+
 mkdir -p ./optimize_logs
 rm -rf optimize_logs/*
+mkdir -p ./optimization_policies
+rm -rf optimization_policies/*
 
 mkdir -p ./optimization_policies
 rm -rf optimization_policies/*

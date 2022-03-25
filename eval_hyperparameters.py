@@ -42,6 +42,7 @@ del params["net_arch"]
 del params["activation_fn"]
 del params["ortho_init"]
 
+
 env = flocking_env.parallel_env(
     N=n_agents,
     h=1 / hz,
@@ -75,6 +76,7 @@ eval_freq = max(eval_freq // (n_envs * n_agents), 1)
 
 
 all_mean_rewards = []
+
 for i in range(10):
     try:
         model = PPO("MlpPolicy", env, verbose=3, **params)
