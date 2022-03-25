@@ -29,18 +29,26 @@ from stable_baselines3.common.callbacks import (
 )
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.monitor import Monitor
-from stable_baselines3.common.noise import NormalActionNoise, OrnsteinUhlenbeckActionNoise
-from stable_baselines3.common.preprocessing import is_image_space, is_image_space_channels_first
-from stable_baselines3.common.sb2_compat.rmsprop_tf_like import RMSpropTFLike  # noqa: F401
+from stable_baselines3.common.noise import (
+    NormalActionNoise,
+    OrnsteinUhlenbeckActionNoise,
+)
+from stable_baselines3.common.preprocessing import (
+    is_image_space,
+    is_image_space_channels_first,
+)
+from stable_baselines3.common.sb2_compat.rmsprop_tf_like import (
+    RMSpropTFLike,
+)  # noqa: F401
 from stable_baselines3.common.utils import constant_fn
 from stable_baselines3.common.vec_env import (
     DummyVecEnv,
     SubprocVecEnv,
     VecEnv,
     VecFrameStack,
-    VecMonitor,
     VecNormalize,
     VecTransposeImage,
+    VecMonitor,
 )
 
 # For custom activation fn
@@ -58,11 +66,9 @@ from utils.utils import (
     linear_schedule,
 )
 
-import fle.flocking_env as flocking_env
-import supersuit as ss
-
 from sb3_contrib.ppo_recurrent.policies import MlpLstmPolicy
 from sb3_contrib import RecurrentPPO
+
 
 class ExperimentManager(object):
     """
@@ -536,7 +542,9 @@ class ExperimentManager(object):
             env = VecNormalize(env, **local_normalize_kwargs)
         return env
 
-    def create_envs(self, n_envs: int, eval_env: bool = False, no_log: bool = False) -> VecEnv:
+    def create_envs(
+        self, n_envs: int, eval_env: bool = False, no_log: bool = False
+    ) -> VecEnv:
         n_agents = 9
         total_energy_j = 24164
         total_distance_m = 894
@@ -559,18 +567,22 @@ class ExperimentManager(object):
         env = ss.delay_observations_v0(env, reaction_frames)
         env = ss.frame_skip_v0(env, skip_frames)
         env = ss.pettingzoo_env_to_vec_env_v1(env)
-        env = ss.concat_vec_envs_v1(env, n_envs, num_cpus=1, base_class="stable_baselines3")
+        env = ss.concat_vec_envs_v1(
+            env, n_envs, num_cpus=1, base_class="stable_baselines3"
+        )
+        print(n_envs)
         env = VecMonitor(env)
 
         env = self._maybe_normalize(env, eval_env)
 
-        if is_image_space(env.observation_space) and not is_image_space_channels_first(env.observation_space):
+        if is_image_space(env.observation_space) and not is_image_space_channels_first(
+            env.observation_space
+        ):
             if self.verbose > 0:
                 print("Wrapping into a VecTransposeImage")
             env = VecTransposeImage(env)
 
         return env
-
 
     def _load_pretrained_agent(
         self, hyperparams: Dict[str, Any], env: VecEnv

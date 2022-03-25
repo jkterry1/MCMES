@@ -9,7 +9,10 @@ from pettingzoo.butterfly import pistonball_v4
 from stable_baselines3 import PPO
 from stable_baselines3.common.callbacks import EvalCallback
 from stable_baselines3.common.evaluation import evaluate_policy
-from stable_baselines3.common.preprocessing import is_image_space, is_image_space_channels_first
+from stable_baselines3.common.preprocessing import (
+    is_image_space,
+    is_image_space_channels_first,
+)
 from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecTransposeImage
 
 num = sys.argv[1]
@@ -53,11 +56,27 @@ for policy in policies:
     while True:
         for agent in render_env.agent_iter():
             observation, _, done, _ = render_env.last()
-            action = model.predict(observation, deterministic=True)[0] if not done else None
+            action = (
+                model.predict(observation, deterministic=True)[0] if not done else None
+            )
             render_env.step(action)
 
         print("Saving vortex logs")
-        render_env.unwrapped.log_vortices("./mature_simulations/" + num + "_" + policy.split(".")[0] + "_vortices" + ".csv")
+        render_env.unwrapped.log_vortices(
+            "./mature_simulations/"
+            + num
+            + "_"
+            + policy.split(".")[0]
+            + "_vortices"
+            + ".csv"
+        )
         print("Saving bird logs")
-        render_env.unwrapped.log_birds("./mature_simulations/" + num + "_" + policy.split(".")[0] + "_birds" + ".csv")
+        render_env.unwrapped.log_birds(
+            "./mature_simulations/"
+            + num
+            + "_"
+            + policy.split(".")[0]
+            + "_birds"
+            + ".csv"
+        )
         break
