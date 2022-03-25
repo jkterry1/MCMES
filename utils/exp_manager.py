@@ -58,9 +58,6 @@ from utils.utils import (
     linear_schedule,
 )
 
-import fle.flocking_env as flocking_env
-import supersuit as ss
-
 from sb3_contrib.ppo_recurrent.policies import MlpLstmPolicy
 from sb3_contrib import RecurrentPPO
 
