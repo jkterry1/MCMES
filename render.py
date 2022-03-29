@@ -24,7 +24,6 @@ env_name = "commons_harvest_open"
 env_config = substrate.get_config(env_name)
 n_agents = 16
 num_frames = 4
-scale = 8
 
 env = meltingpot_env.env(
     env_config=env_config
@@ -54,8 +53,7 @@ for policy in policies:
                 i += 1
                 if i % (len(env.possible_agents) + 1) == 0:
                     obs = np.transpose(env.render(mode="rgb_array"), axes=(1, 0, 2))
-                    obs_scaled = zoom(obs, (scale, scale, 1), order=0)
-                    obs_list.append(obs_scaled)
+                    obs_list.append(obs)
 
             break
 
