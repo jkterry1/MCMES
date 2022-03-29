@@ -146,4 +146,4 @@ class _parallel_env(MeltingPotPettingZooEnv, EzPickle):
 
     def __init__(self, env_config, max_cycles):
         EzPickle.__init__(self, env_config, max_cycles)
-        super().__init__(env_config, max_cycles)
+        MeltingPotPettingZooEnv.__init__(self, env_config, max_cycles)
