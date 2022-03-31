@@ -1,5 +1,5 @@
 from stable_baselines3 import PPO
-from pettingzoo.butterfly import knights_archers_zombies_v8
+from pettingzoo.butterfly import knights_archers_zombies_v9
 import supersuit as ss
 from stable_baselines3.common.vec_env import VecMonitor, VecTransposeImage, VecNormalize
 from stable_baselines3.common.evaluation import evaluate_policy
@@ -23,7 +23,7 @@ num = sys.argv[1]
 #     return env
 
 
-env = knights_archers_zombies_v3.env()
+env = knights_archers_zombies_v9.env()
 env = ss.black_death_v2(env)
 
 policies = os.listdir("./mature_policies/" + str(num) + "/")
