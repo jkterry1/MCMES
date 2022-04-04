@@ -23,7 +23,7 @@ total_energy_j = 24164
 total_distance_m = 894
 hz = 500
 crash_reward = -10
-episodes = 300
+episodes = 12000
 nerve_impulse_hz = 200
 reaction_frames = 0
 time = 60
@@ -43,6 +43,7 @@ render_env = flocking_env.env(
 )
 render_env = ss.delay_observations_v0(render_env, reaction_frames)
 render_env = ss.frame_skip_v0(render_env, skip_frames)
+render_env = ss.frame_stack_v1(render_env, 4)
 
 policies = os.listdir("./mature_policies/" + str(num) + "/")
 

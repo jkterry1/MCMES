@@ -22,7 +22,7 @@ total_energy_j = 24164
 total_distance_m = 894
 hz = 500
 crash_reward = -10
-episodes = 6000
+episodes = 12000
 nerve_impulse_hz = 200
 reaction_frames = 0
 n_timesteps = hz * n_agents * episodes  # real number is skip frames times larger
@@ -67,6 +67,7 @@ env = flocking_env.parallel_env(
 )
 env = ss.delay_observations_v0(env, reaction_frames)
 env = ss.frame_skip_v0(env, skip_frames)
+env = ss.frame_stack_v1(env, 4)
 env = ss.pettingzoo_env_to_vec_env_v1(env)
 env = ss.concat_vec_envs_v1(env, n_envs, num_cpus=1, base_class="stable_baselines3")
 env = VecMonitor(env)
@@ -81,10 +82,9 @@ eval_env = flocking_env.parallel_env(
 )
 eval_env = ss.delay_observations_v0(eval_env, reaction_frames)
 eval_env = ss.frame_skip_v0(eval_env, skip_frames)
+eval_env = ss.frame_stack_v1(eval_env, 4)
 eval_env = ss.pettingzoo_env_to_vec_env_v1(eval_env)
-eval_env = ss.concat_vec_envs_v1(
-    eval_env, 1, num_cpus=1, base_class="stable_baselines3"
-)
+eval_env = ss.concat_vec_envs_v1(eval_env, 1, num_cpus=1, base_class="stable_baselines3")
 eval_env = VecMonitor(eval_env)
 
 eval_freq = int(n_timesteps / n_evaluations)
