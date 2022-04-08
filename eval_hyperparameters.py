@@ -38,6 +38,9 @@ params["policy_kwargs"] = dict(
     net_arch=net_arch, activation_fn=activation_fn, ortho_init=False
 )
 
+del params["net_arch"]
+del params["activation_fn"]
+
 
 def image_transpose(env):
     if is_image_space(env.observation_space) and not is_image_space_channels_first(
