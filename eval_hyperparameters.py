@@ -22,6 +22,9 @@ with open("./hyperparameter_jsons/" + "hyperparameters_" + num + ".json") as f:
 
 print(params)
 
+del params["net_arch"]
+del params["activation_fn"]
+del params["ortho_init"]
 
 def image_transpose(env):
     if is_image_space(env.observation_space) and not is_image_space_channels_first(
