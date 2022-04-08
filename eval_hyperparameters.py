@@ -34,10 +34,8 @@ activation_fn = {
     "elu": nn.ELU,
     "leaky_relu": nn.LeakyReLU,
 }[params["activation_fn"]]
-ortho_init = params["ortho_init"]
-
 params["policy_kwargs"] = dict(
-    net_arch=net_arch, activation_fn=activation_fn, ortho_init=ortho_init
+    net_arch=net_arch, activation_fn=activation_fn, ortho_init=False
 )
 
 
