@@ -5,6 +5,7 @@ import supersuit as ss
 from array2gif import write_gif
 from pettingzoo.butterfly import knights_archers_zombies_v9
 from stable_baselines3 import PPO
+from PIL import Image
 
 n_agents = 4
 
@@ -20,7 +21,7 @@ for policy in policies:
     print("Loading new policy ", filepath)
     model = PPO.load(filepath)
 
-    obs_list = []
+    video_log = []
     i = 0
     env.reset()
     total_reward = 0
@@ -35,16 +36,20 @@ for policy in policies:
                 env.step(action)
                 i += 1
                 if i % (len(env.possible_agents) + 1) == 0:
-                    obs_list.append(
-                        np.transpose(env.render(mode="rgb_array"), axes=(1, 0, 2))
-                    )
+                    video_log.append(Image.fromarray(env.render(mode="rgb_array")))
 
             break
 
         total_reward = total_reward / n_agents
+
         print("writing gif")
-        write_gif(
-            obs_list, "./optimization_gifs/" + policy + "_" + str(total_reward)[:5] + ".gif", fps=15
+        video_log[0].save(
+           "./optimization_gifs/" + policy + "_" + str(total_reward)[:5] + ".gif",
+            save_all=True,
+            append_images=video_log[1:],
+            optimize=False,
+            duration=int(1000 / 15),
+            loop=0,
         )
     except:
         print("error")
