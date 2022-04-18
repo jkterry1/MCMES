@@ -35,6 +35,8 @@ for policy in policies:
 
     for j in ['a','b','c','d','e']:
 
+        print(f'rendering, {j}')
+
         video_log = []
         i = 0
         env.reset()
