@@ -11,7 +11,7 @@ from stable_baselines3.common.preprocessing import (
 import numpy as np
 import os
 import sys
-from array2gif import write_gif
+from PIL import Image
 
 os.environ["SDL_VIDEODRIVER"] = "dummy"
 num = sys.argv[1]
@@ -35,7 +35,7 @@ for policy in policies:
 
     for j in ['a','b','c','d','e']:
 
-        obs_list = []
+        video_log = []
         i = 0
         env.reset()
         total_reward = 0
@@ -49,8 +49,10 @@ for policy in policies:
                 env.step(action)
                 i += 1
                 if i % (len(env.possible_agents) + 1) == 0:
-                    obs_list.append(
-                        np.transpose(env.render(mode="rgb_array"), axes=(1, 0, 2))
+                    video_log.append(
+                        Image.fromarray(
+                            np.transpose(env.render(mode="rgb_array"), axes=(1, 0, 2))
+                        )
                     )
 
             break
@@ -59,6 +61,12 @@ for policy in policies:
 
         if total_reward > 3:
             print("writing gif")
-            write_gif(
-                obs_list, "./mature_gifs/" + num + "_" + policy.split("_")[0] + j + '_' + str(total_reward)[:5] + ".gif", fps=15
+
+            video_log[0].save(
+                "./mature_gifs/" + num + "_" + policy.split("_")[0] + j + '_' + str(total_reward)[:5] + ".gif",
+                save_all=True,
+                append_images=video_log[1:],
+                optimize=False,
+                duration=20,
+                loop=0,
             )
