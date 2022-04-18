@@ -69,6 +69,6 @@ for policy in policies:
                 save_all=True,
                 append_images=video_log[1:],
                 optimize=False,
-                duration=20,
+                duration=int(1000/15),
                 loop=0,
             )
