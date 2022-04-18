@@ -33,9 +33,9 @@ n_agents = 4
 for policy in policies:
     model = PPO.load("./mature_policies/" + str(num) + "/" + policy)
 
-    for j in ['a','b','c','d','e']:
+    for j in ["a", "b", "c", "d", "e"]:
 
-        print(f'rendering, {j}')
+        print(f"rendering, {j}")
 
         video_log = []
         i = 0
@@ -45,17 +45,17 @@ for policy in policies:
         while True:
             for agent in env.agent_iter():
                 observation, reward, done, _ = env.last()
-                action = (model.predict(observation, deterministic=True)[0] if not done else None)
+                action = (
+                    model.predict(observation, deterministic=True)[0]
+                    if not done
+                    else None
+                )
                 total_reward += reward
 
                 env.step(action)
                 i += 1
                 if i % (len(env.possible_agents) + 1) == 0:
-                    video_log.append(
-                        Image.fromarray(
-                            np.transpose(env.render(mode="rgb_array"), axes=(1, 0, 2))
-                        )
-                    )
+                    video_log.append(Image.fromarray(env.render(mode="rgb_array")))
 
             break
 
@@ -65,10 +65,17 @@ for policy in policies:
             print("writing gif")
 
             video_log[0].save(
-                "./mature_gifs/" + num + "_" + policy.split("_")[0] + j + '_' + str(total_reward)[:5] + ".gif",
+                "./mature_gifs/"
+                + num
+                + "_"
+                + policy.split("_")[0]
+                + j
+                + "_"
+                + str(total_reward)[:5]
+                + ".gif",
                 save_all=True,
                 append_images=video_log[1:],
                 optimize=False,
-                duration=int(1000/15),
+                duration=int(1000 / 15),
                 loop=0,
             )
