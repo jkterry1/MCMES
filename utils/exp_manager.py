@@ -560,7 +560,6 @@ class ExperimentManager(object):
         )
         env = ss.delay_observations_v0(env, reaction_frames)
         env = ss.frame_skip_v0(env, skip_frames)
-        env = ss.frame_stack_v1(env, 4)
         env = ss.pettingzoo_env_to_vec_env_v1(env)
         env = ss.concat_vec_envs_v1(env, n_envs, num_cpus=1, base_class="stable_baselines3")
         env = VecMonitor(env)
