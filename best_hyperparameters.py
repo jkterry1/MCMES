@@ -48,6 +48,8 @@ values = []
 trials = study.trials
 trials.sort(key=value_key, reverse=True)
 
+print(str(len(trials)) + '\n')
+
 for i in trials:
     if len(values) < args.print_n_best_trials:
         print(i.value)
