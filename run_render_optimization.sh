@@ -18,8 +18,6 @@ num_gpu=$(nvidia-smi --query-gpu=name --format=csv,noheader | wc -l)
 free_gpu=($(seq 0 1 $((num_gpu-1))))
 
 # get all trials
-all_dirs=./optimization_policies/trial*/
-
 for path in ./optimization_policies/trial*/; do
   # get only the end path string
   dirname=$(basename "$path")
