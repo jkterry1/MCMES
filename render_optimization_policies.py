@@ -14,7 +14,7 @@ from stable_baselines3.common.preprocessing import (
 )
 from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecTransposeImage
 
-# num = sys.argv[1]
+policy = sys.argv[1]
 
 n_agents = 9
 n_envs = 4
@@ -44,40 +44,37 @@ render_env = ss.delay_observations_v0(render_env, reaction_frames)
 render_env = ss.frame_skip_v0(render_env, skip_frames)
 render_env = ss.frame_stack_v1(render_env, 4)
 
-policies = os.listdir("./optimization_policies/")
+filepath = "./optimization_policies/" + policy + "/best_model"
+if not exists(filepath + ".zip"):
+    exit()
+print("Loading new policy ", filepath)
+model = PPO.load(filepath)
 
-for policy in policies:
-    filepath = "./optimization_policies/" + policy + "/best_model"
-    if not exists(filepath + ".zip"):
-        continue
-    print("Loading new policy ", filepath)
-    model = PPO.load(filepath)
+i = 0
+render_env.reset()
+act_filename = "./results/" + policy + "_actions" + ".txt"
+act_file = open(act_filename, "w")
+rewards = {agent: 0 for agent in render_env.agents}
 
-    i = 0
-    render_env.reset()
-    act_filename = "./results/" + policy + "_actions" + ".txt"
-    act_file = open(act_filename, "w")
-    rewards = {agent: 0 for agent in render_env.agents}
+for agent in render_env.agent_iter():
+    observation, reward, done, _ = render_env.last()
+    rewards[agent] += reward
+    action = model.predict(observation, deterministic=True)[0] if not done else None
+    act_str = "Agent: " + str(agent) + "\t Action: " + str(action) + "\n"
+    act_file.write(act_str)
+    render_env.step(action)
 
-    for agent in render_env.agent_iter():
-        observation, reward, done, _ = render_env.last()
-        rewards[agent] += reward
-        action = model.predict(observation, deterministic=True)[0] if not done else None
-        act_str = "Agent: " + str(agent) + "\t Action: " + str(action) + "\n"
-        act_file.write(act_str)
-        render_env.step(action)
-
-    avg_rew = 0
-    for agent in rewards:
-        avg_rew += rewards[agent] / n_agents
-    # print("Saving vortex logs")
-    # render_env.unwrapped.log_vortices("./results/" + policy +"_vortices" + ".csv")
-    print(
-        "Saving bird logs: ./results/" + policy + "_" + str(avg_rew) + "_birds" + ".csv"
-    )
-    render_env.unwrapped.log_birds(
-        "./results/" + policy + "_" + str(avg_rew) + "_birds" + ".csv"
-    )
-    render_env.unwrapped.log_actions(
-        "./results/" + policy + "_" + str(avg_rew) + "_actions" + ".csv"
-    )
+avg_rew = 0
+for agent in rewards:
+    avg_rew += rewards[agent] / n_agents
+# print("Saving vortex logs")
+# render_env.unwrapped.log_vortices("./results/" + policy +"_vortices" + ".csv")
+print(
+    "Saving bird logs: ./results/" + policy + "_" + str(avg_rew) + "_birds" + ".csv"
+)
+render_env.unwrapped.log_birds(
+    "./results/" + policy + "_" + str(avg_rew) + "_birds" + ".csv"
+)
+render_env.unwrapped.log_actions(
+    "./results/" + policy + "_" + str(avg_rew) + "_actions" + ".csv"
+)
