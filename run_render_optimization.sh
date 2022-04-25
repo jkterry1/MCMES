@@ -4,7 +4,7 @@
 rm -rf results/*
 mkdir -p ./results
 rm -rf render_optimization_logs/*
-mkdir -m ./render_optimization_logs
+mkdir -p ./render_optimization_logs
 
 # declare arrays
 declare -a gpu
@@ -17,18 +17,27 @@ num_gpu=$(nvidia-smi --query-gpu=name --format=csv,noheader | wc -l)
 # all available gpus are stored here
 free_gpu=($(seq 0 1 $((num_gpu-1))))
 
+# how many jobs to run per gpu
+job_per_gpu=5
+num_gpu=$(($num_gpu*$job_per_gpu))
+for i in $(seq 1 $job_per_gpu 1); do
+  free_gpu+=(${free_gpu[@]})
+done
+
 # get all trials
-all_dirs=./optimization_policies/trial*/
+all_dirs=(./optimization_policies/trial*/)
 
 # for printout
 num_completed=0
 num_runs=${#all_dirs[@]}
 
-for path in $all_dirs; do
+for path in ${all_dirs[@]}; do
   # get only the end path string
   dirname=$(basename "$path")
+  echo 'Now rendering: ' $dirname
   # start job with first available gpu
-  OMP_NUM_THREADS=1 CUDA_VISIBLE_DEVICES=${free_gpu[0]} nohup python3 render_optimization_policies.py $dirname &> "./render_optimization_logs/${dirname}.out" &
+  # OMP_NUM_THREADS=1 CUDA_VISIBLE_DEVICES=${free_gpu[0]} nohup python3 render_optimization_policies.py $dirname &> "./render_optimization_logs/${dirname}.out" &
+  sleep 5 &
   # store the pid-gpu pair
   pid+=($!)
   gpu+=(${free_gpu[0]})
@@ -37,12 +46,11 @@ for path in $all_dirs; do
   unset free_gpu[0]
   free_gpu=(${free_gpu[@]})
 
-  # while the list of pid is equal to num_gpus
-  while [ ${#pid[@]} -ge $num_gpu ]; do
-    echo ${pid[@]} ${gpu[@]}
+  # while we have no gpus available
+  while [ ${#free_gpu[@]} -le 0 ]; do
     # for all pids in the pid list
     for i in $(seq 0 $((${#pid[@]}-1)) 1); do
-      echo $i ${pid[$i]} ${gpu[$i]}
+      # echo $i ${pid[$i]} ${gpu[$i]}
       # check if the process still exists
       if ! ps -p ${pid[$i]} > /dev/null
         then
@@ -65,3 +73,10 @@ for path in $all_dirs; do
   done
 done
 
+# wait for remaining runs to complete
+for i in ${pid[@]}; do
+    wait $i
+done
+
+# this printout is glitched
+echo 'Completed: ' $num_completed '/' $num_completed
