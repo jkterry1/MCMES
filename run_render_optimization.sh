@@ -36,8 +36,7 @@ for path in ${all_dirs[@]}; do
   dirname=$(basename "$path")
   echo 'Now rendering: ' $dirname
   # start job with first available gpu
-  # OMP_NUM_THREADS=1 CUDA_VISIBLE_DEVICES=${free_gpu[0]} nohup python3 render_optimization_policies.py $dirname &> "./render_optimization_logs/${dirname}.out" &
-  sleep 5 &
+  OMP_NUM_THREADS=1 CUDA_VISIBLE_DEVICES=${free_gpu[0]} nohup python3 render_optimization_policies.py $dirname &> "./render_optimization_logs/${dirname}.out" &
   # store the pid-gpu pair
   pid+=($!)
   gpu+=(${free_gpu[0]})
