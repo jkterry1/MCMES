@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# cleanup
+rm -rf results/*
+mkdir -p ./results
+rm -rf render_optimization_logs/*
+mkdir -m ./render_optimization_logs
+
 # declare arrays
 declare -a gpu
 declare -a pid
