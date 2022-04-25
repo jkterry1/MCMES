@@ -46,7 +46,7 @@ for path in ${all_dirs[@]}; do
   free_gpu=(${free_gpu[@]})
 
   # while we have no gpus available
-  while [ ${#free_gpu[@]} -le 0 ]; do
+  while [ ${#free_gpu[@]} -eq 0 ]; do
     # for all pids in the pid list
     for i in $(seq 0 $((${#pid[@]}-1)) 1); do
       # echo $i ${pid[$i]} ${gpu[$i]}
