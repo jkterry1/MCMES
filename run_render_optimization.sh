@@ -18,7 +18,13 @@ num_gpu=$(nvidia-smi --query-gpu=name --format=csv,noheader | wc -l)
 free_gpu=($(seq 0 1 $((num_gpu-1))))
 
 # get all trials
-for path in ./optimization_policies/trial*/; do
+all_dirs=./optimization_policies/trial*/
+
+# for printout
+num_completed=0
+num_runs=${#all_dirs[@]}
+
+for path in $all_dirs; do
   # get only the end path string
   dirname=$(basename "$path")
   # start job with first available gpu
@@ -47,6 +53,11 @@ for path in ./optimization_policies/trial*/; do
           unset pid[$i]
           gpu=(${gpu[@]})
           pid=(${pid[@]})
+
+          # for printout
+          num_completed=$(($num_completed+1))
+          echo 'Completed: ' $num_completed '/' $num_runs
+
           break 2
       fi
     done
