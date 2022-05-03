@@ -38,6 +38,9 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
+print(args.storage)
+print(args.study)
+
 study = optuna.create_study(
     study_name=args.study_name,
     storage=args.storage,
