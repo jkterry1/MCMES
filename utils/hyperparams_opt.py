@@ -25,7 +25,7 @@ def sample_ppo_params(trial: optuna.Trial) -> Dict[str, Any]:
     lr_schedule = "constant"
     # Uncomment to enable learning rate schedule
     # lr_schedule = trial.suggest_categorical('lr_schedule', ['linear', 'constant'])
-    ent_coef = trial.suggest_loguniform("ent_coef", 1e-3, 1e-7)
+    ent_coef = trial.suggest_loguniform("ent_coef", 1e-7, 1e-3)
     clip_range = trial.suggest_categorical("clip_range", [0.1])
     n_epochs = trial.suggest_categorical("n_epochs", [5, 10])
     gae_lambda = trial.suggest_categorical(
