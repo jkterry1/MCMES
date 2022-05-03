@@ -18,25 +18,26 @@ def sample_ppo_params(trial: optuna.Trial) -> Dict[str, Any]:
     :param trial:
     :return:
     """
-    batch_size = trial.suggest_categorical("batch_size", [16, 32, 64, 128, 256, 512])
-    n_steps = trial.suggest_categorical("n_steps", [32, 64, 128, 256, 512])
-    gamma = trial.suggest_categorical("gamma", [0.995, 0.999, 0.9999, 0.9995, 0.99999])
-    learning_rate = trial.suggest_loguniform("learning_rate", 1e-5, 1)
+    batch_size = trial.suggest_categorical("batch_size", [32, 64])
+    n_steps = trial.suggest_categorical("n_steps", [128, 256, 512])
+    gamma = trial.suggest_categorical("gamma", [0.999, 0.9999, 0.99999])
+    learning_rate = trial.suggest_loguniform("learning_rate", 1e-5, 1e-4)
     lr_schedule = "constant"
     # Uncomment to enable learning rate schedule
     # lr_schedule = trial.suggest_categorical('lr_schedule', ['linear', 'constant'])
-    ent_coef = trial.suggest_loguniform("ent_coef", 0.00000001, 0.1)
-    clip_range = trial.suggest_categorical("clip_range", [0.1, 0.2, 0.3, 0.4])
-    n_epochs = trial.suggest_categorical("n_epochs", [1, 5, 10, 20])
+    ent_coef = trial.suggest_loguniform("ent_coef", 1e-3, 1e-7)
+    clip_range = trial.suggest_categorical("clip_range", [0.1])
+    n_epochs = trial.suggest_categorical("n_epochs", [5, 10])
     gae_lambda = trial.suggest_categorical(
-        "gae_lambda", [0.8, 0.9, 0.92, 0.95, 0.98, 0.99, 1.0]
+        "gae_lambda", [0.9]
     )
     max_grad_norm = trial.suggest_categorical(
-        "max_grad_norm", [0.3, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 2, 5]
+        "max_grad_norm", [0.2, 0.4, 0.6, 0.8]
     )
     vf_coef = trial.suggest_uniform("vf_coef", 0, 1)
     net_arch = trial.suggest_categorical(
-        "net_arch", ["small", "medium", "large", "extra_large"]
+        # "net_arch", ["small", "medium", "large", "extra_large"]
+        "net_arch", ["medium", "large"]
     )
     # Uncomment for gSDE (continuous actions)
     # log_std_init = trial.suggest_uniform("log_std_init", -4, 1)
@@ -59,17 +60,17 @@ def sample_ppo_params(trial: optuna.Trial) -> Dict[str, Any]:
     # when not working with images
 
     net_arch = {
-        "small": [dict(pi=[64, 64], vf=[64, 64])],
+        # "small": [dict(pi=[64, 64], vf=[64, 64])],
         "medium": [dict(pi=[256, 256], vf=[256, 256])],
         "large": [dict(pi=[400, 300], vf=[400, 300])],
-        "extra_large": [dict(pi=[750, 750, 500], vf=[750, 750, 500])],
+        # "extra_large": [dict(pi=[750, 750, 500], vf=[750, 750, 500])],
     }[net_arch]
 
     activation_fn = {
         "tanh": nn.Tanh,
         "relu": nn.ReLU,
-        "elu": nn.ELU,
-        "leaky_relu": nn.LeakyReLU,
+        # "elu": nn.ELU,
+        # "leaky_relu": nn.LeakyReLU,
     }[activation_fn]
 
     return {
