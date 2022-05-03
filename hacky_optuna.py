@@ -11,8 +11,8 @@ def value_key(a):
         return a.value
 
 study = optuna.create_study(
-    study_name='blue-needle',
-    storage='mysql://database:ZrWdchqeNpmbuAXYpy2V@35.194.57.226',
+    study_name='',
+    storage='mysql://database:ZrWdchqeNpmbuAXYpy2V@35.194.57.226/',
     load_if_exists=True,
     direction="maximize",
 )
