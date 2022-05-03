@@ -42,7 +42,7 @@ render_env = flocking_env.env(
 )
 render_env = ss.delay_observations_v0(render_env, reaction_frames)
 render_env = ss.frame_skip_v0(render_env, skip_frames)
-render_env = ss.frame_stack_v1(render_env, 4)
+# render_env = ss.frame_stack_v1(render_env, 4)
 
 filepath = "./optimization_policies/" + policy + "/best_model"
 if not exists(filepath + ".zip"):
