@@ -12,7 +12,7 @@ def value_key(a):
 
 study = optuna.create_study(
     study_name=None,
-    storage='mysql://database:ZrWdchqeNpmbuAXYpy2V@35.194.57.226/',
+    storage='mysql://database:ZrWdchqeNpmbuAXYpy2V@35.194.57.226/kaz7',
     load_if_exists=True,
     direction="maximize",
 )
