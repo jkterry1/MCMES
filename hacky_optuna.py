@@ -23,5 +23,4 @@ trials.sort(key=value_key, reverse=True)
 print(str(len(trials)) + '\n')
 
 for trial in trials:
-    if len(values) < 5:
-        print(trial)
+    print(trial)
