@@ -39,7 +39,7 @@ parser.add_argument(
 args = parser.parse_args()
 
 print(args.storage)
-print(args.study)
+print(args.study_name)
 
 study = optuna.create_study(
     study_name=args.study_name,
