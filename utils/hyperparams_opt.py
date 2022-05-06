@@ -18,8 +18,8 @@ def sample_ppo_params(trial: optuna.Trial) -> Dict[str, Any]:
     :param trial:
     :return:
     """
-    batch_size = trial.suggest_categorical("batch_size", [32, 64, 128, 256])
-    n_steps = trial.suggest_categorical("n_steps", [128, 256, 512])
+    batch_size = trial.suggest_categorical("batch_size", [2 ** 13])
+    n_steps = trial.suggest_categorical("n_steps", [2 ** 13, 2 ** 14])
     gamma = trial.suggest_categorical("gamma", [0.999, 0.9999, 0.99999])
     learning_rate = trial.suggest_loguniform("learning_rate", 1e-5, 1e-3)
     lr_schedule = "constant"
@@ -27,7 +27,7 @@ def sample_ppo_params(trial: optuna.Trial) -> Dict[str, Any]:
     # lr_schedule = trial.suggest_categorical('lr_schedule', ['linear', 'constant'])
     ent_coef = trial.suggest_loguniform("ent_coef", 1e-7, 1e-3)
     clip_range = trial.suggest_categorical("clip_range", [0.1, 0.15, 0.2])
-    n_epochs = trial.suggest_categorical("n_epochs", [5, 10, 15, 20])
+    n_epochs = trial.suggest_categorical("n_epochs", [5, 10, 15])
     gae_lambda = trial.suggest_categorical(
         "gae_lambda", [0.8, 0.9, 0.92, 0.95, 0.98]
     )
@@ -63,7 +63,7 @@ def sample_ppo_params(trial: optuna.Trial) -> Dict[str, Any]:
         # "small": [dict(pi=[64, 64], vf=[64, 64])],
         "medium": [dict(pi=[256, 256], vf=[256, 256])],
         "large": [dict(pi=[400, 300], vf=[400, 300])],
-        # "extra_large": [dict(pi=[750, 750, 500], vf=[750, 750, 500])],
+        "extra_large": [dict(pi=[750, 750, 500], vf=[750, 750, 500])],
     }[net_arch]
 
     activation_fn = {
