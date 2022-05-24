@@ -38,6 +38,7 @@ render_env = flocking_env.env(
     forward_reward=distance_reward_per_m,
     crash_reward=crash_reward,
     action_logging=True,
+    log=True,
     LIA=True,
 )
 render_env = ss.delay_observations_v0(render_env, reaction_frames)
