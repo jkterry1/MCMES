@@ -1,15 +1,13 @@
-import sys
 import json
-from stable_baselines3 import DQN
-from pettingzoo.butterfly import pistonball_v5
+import sys
+
 import supersuit as ss
-from stable_baselines3.common.vec_env import VecMonitor, VecTransposeImage, VecNormalize
-from stable_baselines3.common.evaluation import evaluate_policy
+from pettingzoo.butterfly import pistonball_v6
+from stable_baselines3 import DQN
 from stable_baselines3.common.callbacks import EvalCallback
-from stable_baselines3.common.preprocessing import (
-    is_image_space,
-    is_image_space_channels_first,
-)
+from stable_baselines3.common.evaluation import evaluate_policy
+from stable_baselines3.common.preprocessing import is_image_space, is_image_space_channels_first
+from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecTransposeImage
 
 num = sys.argv[1]
 n_evaluations = 20
@@ -22,20 +20,18 @@ with open("./hyperparameter_jsons/" + "hyperparameters_" + num + ".json") as f:
 
 print(params)
 
-params['gradient_steps'] = max(params['train_freq'] // params['subsample_steps'], 1)
+params["gradient_steps"] = max(params["train_freq"] // params["subsample_steps"], 1)
 
-del params['subsample_steps']
+del params["subsample_steps"]
 
 
 def image_transpose(env):
-    if is_image_space(env.observation_space) and not is_image_space_channels_first(
-        env.observation_space
-    ):
+    if is_image_space(env.observation_space) and not is_image_space_channels_first(env.observation_space):
         env = VecTransposeImage(env)
     return env
 
 
-env = pistonball_v5.parallel_env(continuous=False)
+env = pistonball_v6.parallel_env(continuous=False)
 env = ss.color_reduction_v0(env, mode="B")
 env = ss.resize_v0(env, x_size=84, y_size=84)
 env = ss.frame_stack_v1(env, 3)
@@ -44,14 +40,12 @@ env = ss.concat_vec_envs_v1(env, n_envs, num_cpus=1, base_class="stable_baseline
 env = VecMonitor(env)
 env = image_transpose(env)
 
-eval_env = pistonball_v5.parallel_env(continuous=False)
+eval_env = pistonball_v6.parallel_env(continuous=False)
 eval_env = ss.color_reduction_v0(eval_env, mode="B")
 eval_env = ss.resize_v0(eval_env, x_size=84, y_size=84)
 eval_env = ss.frame_stack_v1(eval_env, 3)
 eval_env = ss.pettingzoo_env_to_vec_env_v1(eval_env)
-eval_env = ss.concat_vec_envs_v1(
-    eval_env, 1, num_cpus=1, base_class="stable_baselines3"
-)
+eval_env = ss.concat_vec_envs_v1(eval_env, 1, num_cpus=1, base_class="stable_baselines3")
 eval_env = VecMonitor(eval_env)
 eval_env = image_transpose(eval_env)
 
@@ -73,24 +67,14 @@ for i in range(10):
         )
         model.learn(total_timesteps=n_timesteps, callback=eval_callback)
         model = DQN.load("./eval_logs/" + num + "/" + str(i) + "/" + "best_model")
-        mean_reward, std_reward = evaluate_policy(
-            model, eval_env, deterministic=True, n_eval_episodes=25
-        )
+        mean_reward, std_reward = evaluate_policy(model, eval_env, deterministic=True, n_eval_episodes=25)
         print(mean_reward)
         print(std_reward)
         all_mean_rewards.append(mean_reward)
         if mean_reward > 90:
-            model.save(
-                "./mature_policies/"
-                + str(num)
-                + "/"
-                + str(i)
-                + "_"
-                + str(mean_reward).split(".")[0]
-                + ".zip"
-            )
+            model.save("./mature_policies/" + str(num) + "/" + str(i) + "_" + str(mean_reward).split(".")[0] + ".zip")
     except:
-        print('Evaluation error')
+        print("Evaluation error")
 
 if len(all_mean_rewards) > 0:
     print(sum(all_mean_rewards) / len(all_mean_rewards))
