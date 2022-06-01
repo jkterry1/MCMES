@@ -1,21 +1,19 @@
-from stable_baselines3 import PPO
-from pettingzoo.sisl import multiwalker_v7
-import supersuit as ss
-from stable_baselines3.common.vec_env import VecMonitor, VecTransposeImage, VecNormalize
-from stable_baselines3.common.evaluation import evaluate_policy
-from stable_baselines3.common.callbacks import EvalCallback
-from stable_baselines3.common.preprocessing import (
-    is_image_space,
-    is_image_space_channels_first,
-)
-import numpy as np
 import os
 import sys
+
+import numpy as np
+import supersuit as ss
 from array2gif import write_gif
+from pettingzoo.sisl import multiwalker_v9
+from stable_baselines3 import PPO
+from stable_baselines3.common.callbacks import EvalCallback
+from stable_baselines3.common.evaluation import evaluate_policy
+from stable_baselines3.common.preprocessing import is_image_space, is_image_space_channels_first
+from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecTransposeImage
 
-#import pyglet
+# import pyglet
 
-#pyglet.options['headless'] = True
+# pyglet.options['headless'] = True
 num = sys.argv[1]
 
 
@@ -25,7 +23,7 @@ num = sys.argv[1]
 #     return env
 
 
-env = multiwalker_v7.env()
+env = multiwalker_v9.env()
 env = ss.frame_stack_v1(env, 3)
 
 n_agents = 3
@@ -35,7 +33,7 @@ policies = os.listdir("./mature_policies/" + str(num) + "/")
 for policy in policies:
     model = PPO.load("./mature_policies/" + str(num) + "/" + policy)
 
-    for j in ['a','b','c','d','e']:
+    for j in ["a", "b", "c", "d", "e"]:
 
         obs_list = []
         i = 0
@@ -45,15 +43,13 @@ for policy in policies:
         while True:
             for agent in env.agent_iter():
                 observation, reward, done, _ = env.last()
-                action = (model.predict(observation, deterministic=True)[0] if not done else None)
+                action = model.predict(observation, deterministic=True)[0] if not done else None
                 total_reward += reward
 
                 env.step(action)
                 i += 1
                 if i % (len(env.possible_agents) + 1) == 0:
-                    obs_list.append(
-                        np.transpose(env.render(mode="rgb_array"), axes=(1, 0, 2))
-                    )
+                    obs_list.append(np.transpose(env.render(mode="rgb_array"), axes=(1, 0, 2)))
 
             break
 
@@ -62,5 +58,7 @@ for policy in policies:
         if total_reward > 70:
             print("writing gif")
             write_gif(
-                obs_list, "./mature_gifs/" + num + "_" + policy.split("_")[0] + j + '_' + str(total_reward)[:5] + ".gif", fps=50
+                obs_list,
+                "./mature_gifs/" + num + "_" + policy.split("_")[0] + j + "_" + str(total_reward)[:5] + ".gif",
+                fps=50,
             )
