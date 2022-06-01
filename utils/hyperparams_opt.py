@@ -127,7 +127,7 @@ def sample_a2c_params(trial: optuna.Trial) -> Dict[str, Any]:
         "max_grad_norm": max_grad_norm,
         "use_rms_prop": use_rms_prop,
         "vf_coef": vf_coef,
-        "policy": CnnPolicy,
+        "policy": "CnnPolicy",
     }
 
 
