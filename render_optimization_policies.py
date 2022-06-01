@@ -1,22 +1,21 @@
 import os
 from os.path import exists
-import numpy as np
+
 import supersuit as ss
-from array2gif import write_gif
-from pettingzoo.butterfly import knights_archers_zombies_v9
-from stable_baselines3 import PPO
+from pettingzoo.butterfly import knights_archers_zombies_v10
 from PIL import Image
+from stable_baselines3 import PPO
 
 n_agents = 4
 
-env = knights_archers_zombies_v9.env()
+env = knights_archers_zombies_v10.env()
 env = ss.black_death_v3(env)
 
 policies = os.listdir("./optimization_policies/")
 
 for policy in policies:
     filepath = "./optimization_policies/" + policy + "/best_model"
-    if not exists(filepath + '.zip'):
+    if not exists(filepath + ".zip"):
         continue
     print("Loading new policy ", filepath)
     model = PPO.load(filepath)
@@ -30,7 +29,7 @@ for policy in policies:
         while True:
             for agent in env.agent_iter():
                 observation, reward, done, _ = env.last()
-                action = (model.predict(observation, deterministic=True)[0] if not done else None)
+                action = model.predict(observation, deterministic=True)[0] if not done else None
                 total_reward += reward
 
                 env.step(action)
@@ -44,7 +43,7 @@ for policy in policies:
 
         print("writing gif")
         video_log[0].save(
-           "./optimization_gifs/" + policy + "_" + str(total_reward)[:5] + ".gif",
+            "./optimization_gifs/" + policy + "_" + str(total_reward)[:5] + ".gif",
             save_all=True,
             append_images=video_log[1:],
             optimize=False,

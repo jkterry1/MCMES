@@ -1,5 +1,6 @@
-import os
 import glob
+import os
+
 from PIL import Image
 
 
@@ -17,9 +18,7 @@ def resize_gif(path, resize_to=None):
 
     if len(all_frames) == 1:
         print("Warning: only 1 frame found")
-        all_frames[0].save(
-            f"./compressed_gifs/{os.path.split(path)[-1]}", optimize=True
-        )
+        all_frames[0].save(f"./compressed_gifs/{os.path.split(path)[-1]}", optimize=True)
     else:
         all_frames[0].save(
             f"./compressed_gifs/{os.path.split(path)[-1]}",
