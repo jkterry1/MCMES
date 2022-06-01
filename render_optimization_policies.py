@@ -8,10 +8,7 @@ import supersuit as ss
 from stable_baselines3 import PPO
 from stable_baselines3.common.callbacks import EvalCallback
 from stable_baselines3.common.evaluation import evaluate_policy
-from stable_baselines3.common.preprocessing import (
-    is_image_space,
-    is_image_space_channels_first,
-)
+from stable_baselines3.common.preprocessing import is_image_space, is_image_space_channels_first
 from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecTransposeImage
 
 policy = sys.argv[1]
@@ -70,12 +67,6 @@ for agent in rewards:
     avg_rew += rewards[agent] / n_agents
 # print("Saving vortex logs")
 # render_env.unwrapped.log_vortices("./results/" + policy +"_vortices" + ".csv")
-print(
-    "Saving bird logs: ./results/" + policy + "_" + str(avg_rew) + "_birds" + ".csv"
-)
-render_env.unwrapped.log_birds(
-    "./results/" + policy + "_" + str(avg_rew) + "_birds" + ".csv"
-)
-render_env.unwrapped.log_actions(
-    "./results/" + policy + "_" + str(avg_rew) + "_actions" + ".csv"
-)
+print("Saving bird logs: ./results/" + policy + "_" + str(avg_rew) + "_birds" + ".csv")
+render_env.unwrapped.log_birds("./results/" + policy + "_" + str(avg_rew) + "_birds" + ".csv")
+render_env.unwrapped.log_actions("./results/" + policy + "_" + str(avg_rew) + "_actions" + ".csv")

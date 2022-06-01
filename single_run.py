@@ -1,18 +1,15 @@
 import json
 import sys
 import time
+
 import fle.flocking_env as flocking_env
 import supersuit as ss
 from stable_baselines3 import PPO
 from stable_baselines3.common.callbacks import EvalCallback
 from stable_baselines3.common.evaluation import evaluate_policy
-from stable_baselines3.common.preprocessing import (
-    is_image_space,
-    is_image_space_channels_first,
-)
+from stable_baselines3.common.preprocessing import is_image_space, is_image_space_channels_first
 from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecTransposeImage
 from torch import nn as nn
-
 
 n_evaluations = 20
 n_agents = 9
@@ -54,9 +51,7 @@ eval_env = flocking_env.parallel_env(
 eval_env = ss.delay_observations_v0(eval_env, reaction_frames)
 eval_env = ss.frame_skip_v0(eval_env, skip_frames)
 eval_env = ss.pettingzoo_env_to_vec_env_v0(eval_env)
-eval_env = ss.concat_vec_envs_v0(
-    eval_env, 1, num_cpus=1, base_class="stable_baselines3"
-)
+eval_env = ss.concat_vec_envs_v0(eval_env, 1, num_cpus=1, base_class="stable_baselines3")
 eval_env = VecMonitor(eval_env)
 
 eval_freq = int(n_timesteps / n_evaluations)

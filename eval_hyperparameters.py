@@ -6,10 +6,7 @@ import supersuit as ss
 from stable_baselines3 import PPO
 from stable_baselines3.common.callbacks import EvalCallback
 from stable_baselines3.common.evaluation import evaluate_policy
-from stable_baselines3.common.preprocessing import (
-    is_image_space,
-    is_image_space_channels_first,
-)
+from stable_baselines3.common.preprocessing import is_image_space, is_image_space_channels_first
 from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecTransposeImage
 from torch import nn as nn
 
@@ -49,9 +46,7 @@ activation_fn = {
 }[params["activation_fn"]]
 ortho_init = params["ortho_init"]
 
-params["policy_kwargs"] = dict(
-    net_arch=net_arch, activation_fn=activation_fn, ortho_init=ortho_init
-)
+params["policy_kwargs"] = dict(net_arch=net_arch, activation_fn=activation_fn, ortho_init=ortho_init)
 
 del params["net_arch"]
 del params["activation_fn"]
@@ -105,22 +100,12 @@ for i in range(10):
         )
         model.learn(total_timesteps=n_timesteps, callback=eval_callback)
         model = PPO.load("./eval_logs/" + num + "/" + str(i) + "/" + "best_model")
-        mean_reward, std_reward = evaluate_policy(
-            model, eval_env, deterministic=True, n_eval_episodes=25
-        )
+        mean_reward, std_reward = evaluate_policy(model, eval_env, deterministic=True, n_eval_episodes=25)
         print(mean_reward)
         print(std_reward)
         all_mean_rewards.append(mean_reward)
         if mean_reward > 50:
-            model.save(
-                "./mature_policies/"
-                + str(num)
-                + "/"
-                + str(i)
-                + "_"
-                + str(mean_reward).split(".")[0]
-                + ".zip"
-            )
+            model.save("./mature_policies/" + str(num) + "/" + str(i) + "_" + str(mean_reward).split(".")[0] + ".zip")
     except:
         print("error")
 
