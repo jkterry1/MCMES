@@ -3,12 +3,12 @@ from os.path import exists
 import numpy as np
 import supersuit as ss
 from array2gif import write_gif
-from pettingzoo.butterfly import pistonball_v5
+from pettingzoo.butterfly import pistonball_v6
 from stable_baselines3 import PPO
 
 n_agents = 20
 
-env = pistonball_v5.env(continuous=False)
+env = pistonball_v6.env(continuous=False)
 env = ss.color_reduction_v0(env, mode="B")
 env = ss.resize_v0(env, x_size=84, y_size=84)
 env = ss.frame_stack_v1(env, 3)
