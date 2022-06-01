@@ -1,16 +1,17 @@
-from stable_baselines3 import PPO
-import supersuit as ss
-import numpy as np
 import os
-import sys
-import sumo_rl
-from pettingzoo.utils.conversions import from_parallel
-import imageio
 import subprocess
+import sys
 
-#import pyglet
+import imageio
+import numpy as np
+import sumo_rl
+import supersuit as ss
+from pettingzoo.utils.conversions import from_parallel
+from stable_baselines3 import PPO
 
-#pyglet.options['headless'] = True
+# import pyglet
+
+# pyglet.options['headless'] = True
 num = sys.argv[1]
 
 
@@ -37,7 +38,7 @@ os.mkdir(cache)
 for policy in policies:
     model = PPO.load("./mature_policies/" + str(num) + "/" + policy)
 
-    for j in ['a', 'b', 'c', 'd', 'e']:
+    for j in ["a", "b", "c", "d", "e"]:
 
         i = 0
         k = 0
@@ -46,21 +47,21 @@ for policy in policies:
 
         for agent in env.agent_iter():
             observation, reward, done, _ = env.last()
-            action = (model.predict(observation, deterministic=True)[0] if not done else None)
+            action = model.predict(observation, deterministic=True)[0] if not done else None
             total_reward += reward
 
             env.step(action)
             i += 1
             if i % (len(env.possible_agents) + 1) == 0:
                 render_array = env.render(mode="rgb_array")
-                imageio.imwrite(cache + str(k) + '.jpg', render_array.astype('uint8'))
+                imageio.imwrite(cache + str(k) + ".jpg", render_array.astype("uint8"))
                 k = k + 1
 
         total_reward = total_reward / n_agents
 
-        if total_reward > -.1:
+        if total_reward > -0.1:
             print("Rendering frames")
-            name = "./mature_gifs/" + num + "_" + policy.split("_")[0] + j + '_' + str(total_reward)[:5] + ".mp4"
+            name = "./mature_gifs/" + num + "_" + policy.split("_")[0] + j + "_" + str(total_reward)[:5] + ".mp4"
             subprocess.run(["ffmpeg", "-y", "-framerate", "5", "-i", cache + "%d.jpg", name])
 
         # clear scratch directory
