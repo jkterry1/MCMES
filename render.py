@@ -1,13 +1,6 @@
 from stable_baselines3 import PPO
 from pettingzoo.butterfly import pistonball_v6
 import supersuit as ss
-from stable_baselines3.common.vec_env import VecMonitor, VecTransposeImage, VecNormalize
-from stable_baselines3.common.evaluation import evaluate_policy
-from stable_baselines3.common.callbacks import EvalCallback
-from stable_baselines3.common.preprocessing import (
-    is_image_space,
-    is_image_space_channels_first,
-)
 import numpy as np
 import os
 import sys
@@ -15,12 +8,6 @@ from array2gif import write_gif
 
 os.environ["SDL_VIDEODRIVER"] = "dummy"
 num = sys.argv[1]
-
-
-# def image_transpose(env):
-#     if is_image_space(env.observation_space) and not is_image_space_channels_first(env.observation_space):
-#         env = VecTransposeImage(env)
-#     return env
 
 
 env = pistonball_v6.env(continuous=False)
