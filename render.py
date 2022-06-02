@@ -1,5 +1,6 @@
 import os
 import sys
+
 import supersuit as ss
 from pettingzoo.butterfly import knights_archers_zombies_v10
 from PIL import Image
