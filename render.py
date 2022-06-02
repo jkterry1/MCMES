@@ -6,10 +6,6 @@ import supersuit as ss
 from array2gif import write_gif
 from pettingzoo.sisl import pursuit_v4
 from stable_baselines3 import PPO
-from stable_baselines3.common.callbacks import EvalCallback
-from stable_baselines3.common.evaluation import evaluate_policy
-from stable_baselines3.common.preprocessing import is_image_space, is_image_space_channels_first
-from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecTransposeImage
 
 os.environ["SDL_VIDEODRIVER"] = "dummy"
 num = sys.argv[1]
