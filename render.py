@@ -3,24 +3,15 @@ import subprocess
 import sys
 
 import imageio
-import numpy as np
 import sumo_rl
 import supersuit as ss
 from pettingzoo.utils.conversions import from_parallel
 from stable_baselines3 import PPO
 
-# import pyglet
-
-# pyglet.options['headless'] = True
 num = sys.argv[1]
 
 
-# def image_transpose(env):
-#     if is_image_space(env.observation_space) and not is_image_space_channels_first(env.observation_space):
-#         env = VecTransposeImage(env)
-#     return env
-
-RESOLUTION = (4000, 4000)
+RESOLUTION = (4000, 4000)  # required for cars to be visible
 
 n_agents = 7
 
