@@ -8,7 +8,6 @@ from pprint import pprint
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
 import gym
-import magent
 import numpy as np
 import optuna
 import supersuit as ss
@@ -23,21 +22,11 @@ from pettingzoo.sisl import pursuit_v4
 from stable_baselines3 import HerReplayBuffer  # noqa: F401
 from stable_baselines3.common.base_class import BaseAlgorithm
 from stable_baselines3.common.callbacks import BaseCallback, CheckpointCallback, EvalCallback
-from stable_baselines3.common.env_util import make_vec_env
-from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.noise import NormalActionNoise, OrnsteinUhlenbeckActionNoise
 from stable_baselines3.common.preprocessing import is_image_space, is_image_space_channels_first
 from stable_baselines3.common.sb2_compat.rmsprop_tf_like import RMSpropTFLike  # noqa: F401
 from stable_baselines3.common.utils import constant_fn
-from stable_baselines3.common.vec_env import (
-    DummyVecEnv,
-    SubprocVecEnv,
-    VecEnv,
-    VecFrameStack,
-    VecMonitor,
-    VecNormalize,
-    VecTransposeImage,
-)
+from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv, VecEnv, VecMonitor, VecNormalize, VecTransposeImage
 
 # For custom activation fn
 from torch import nn as nn  # noqa: F401
