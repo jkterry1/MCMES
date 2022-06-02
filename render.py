@@ -1,6 +1,5 @@
 import os
 import sys
-
 import numpy as np
 import supersuit as ss
 from array2gif import write_gif
@@ -9,12 +8,6 @@ from stable_baselines3 import PPO
 
 os.environ["SDL_VIDEODRIVER"] = "dummy"
 num = sys.argv[1]
-
-
-# def image_transpose(env):
-#     if is_image_space(env.observation_space) and not is_image_space_channels_first(env.observation_space):
-#         env = VecTransposeImage(env)
-#     return env
 
 
 env = cooperative_pong_v4.parallel_env()
