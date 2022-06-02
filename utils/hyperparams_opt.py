@@ -3,7 +3,6 @@ from typing import Any, Dict
 import numpy as np
 import optuna
 from stable_baselines3.common.noise import NormalActionNoise, OrnsteinUhlenbeckActionNoise
-from torch import nn as nn
 
 from utils import linear_schedule
 
@@ -93,7 +92,7 @@ def sample_a2c_params(trial: optuna.Trial) -> Dict[str, Any]:
     vf_coef = trial.suggest_uniform("vf_coef", 0, 1)
     # Uncomment for gSDE (continuous actions)
     # log_std_init = trial.suggest_uniform("log_std_init", -4, 1)
-    ortho_init = trial.suggest_categorical("ortho_init", [False, True])
+    # ortho_init = trial.suggest_categorical("ortho_init", [False, True])
     # net_arch = trial.suggest_categorical("net_arch", ["small", "medium"])
     # sde_net_arch = trial.suggest_categorical("sde_net_arch", [None, "tiny", "small"])
     # full_std = trial.suggest_categorical("full_std", [False, True])
