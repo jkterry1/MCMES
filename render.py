@@ -1,21 +1,15 @@
 import os
 import sys
-
 import numpy as np
 import supersuit as ss
 from array2gif import write_gif
-from scipy.ndimage import zoom
 from stable_baselines3 import PPO
-from stable_baselines3.common.callbacks import EvalCallback
-from stable_baselines3.common.evaluation import evaluate_policy
-from stable_baselines3.common.preprocessing import is_image_space, is_image_space_channels_first
-from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecTransposeImage
+import meltingpot_env
+from meltingpot.python import substrate
 
 os.environ["SDL_VIDEODRIVER"] = "dummy"
 num = sys.argv[1]
 
-import meltingpot_env
-from meltingpot.python import substrate
 
 env_name = "commons_harvest_open"
 env_config = substrate.get_config(env_name)

@@ -6,7 +6,6 @@ import numpy as np
 import supersuit as ss
 from array2gif import write_gif
 from meltingpot.python import substrate
-from scipy.ndimage import zoom
 from stable_baselines3 import PPO
 
 env_name = "commons_harvest_open"
