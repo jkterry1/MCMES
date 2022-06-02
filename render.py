@@ -1,11 +1,12 @@
 import os
 import sys
+
+import meltingpot_env
 import numpy as np
 import supersuit as ss
 from array2gif import write_gif
-from stable_baselines3 import PPO
-import meltingpot_env
 from meltingpot.python import substrate
+from stable_baselines3 import PPO
 
 os.environ["SDL_VIDEODRIVER"] = "dummy"
 num = sys.argv[1]

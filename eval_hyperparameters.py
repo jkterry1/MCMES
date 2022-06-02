@@ -13,7 +13,6 @@ from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
 from stable_baselines3.common.vec_env import VecMonitor
 from stable_baselines3.common.vec_env.vec_transpose import VecTransposeImage
 from torch import nn
-from torch.nn import functional as F
 
 num = sys.argv[1]
 n_evaluations = 20
