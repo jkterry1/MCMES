@@ -6,8 +6,7 @@ import supersuit as ss
 from stable_baselines3 import PPO
 from stable_baselines3.common.callbacks import EvalCallback
 from stable_baselines3.common.evaluation import evaluate_policy
-from stable_baselines3.common.preprocessing import is_image_space, is_image_space_channels_first
-from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecTransposeImage
+from stable_baselines3.common.vec_env import VecMonitor
 from torch import nn as nn
 
 num = sys.argv[1]
