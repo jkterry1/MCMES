@@ -1,5 +1,6 @@
 import os
 import sys
+
 import numpy as np
 import supersuit as ss
 from array2gif import write_gif
