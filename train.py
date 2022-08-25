@@ -27,7 +27,7 @@ if __name__ == "__main__":  # noqa: C901
         required=False,
         choices=list(ALGOS.keys()),
     )
-    parser.add_argument("--env", type=str, default="CartPole-v1", help="environment ID")
+    parser.add_argument("--env", type=str, default="CooperativePong", help="environment ID")
     parser.add_argument("-tb", "--tensorboard-log", help="Tensorboard log dir", default="", type=str)
     parser.add_argument(
         "-i",
@@ -209,14 +209,6 @@ if __name__ == "__main__":  # noqa: C901
 
     env_id = args.env
     registered_envs = set(gym.envs.registry.env_specs.keys())  # pytype: disable=module-attr
-
-    # If the environment is not found, suggest the closest match
-    if env_id not in registered_envs:
-        try:
-            closest_match = difflib.get_close_matches(env_id, registered_envs, n=1)[0]
-        except IndexError:
-            closest_match = "'no close match found...'"
-        raise ValueError(f"{env_id} not found in gym registry, you maybe meant {closest_match}?")
 
     # Unique id to ensure there is no race condition for the folder creation
     uuid_str = f"_{uuid.uuid4()}" if args.uuid else ""
