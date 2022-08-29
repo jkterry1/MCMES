@@ -49,3 +49,13 @@ where the number at the end corresponds to the top `n` best hyperparameters foun
 The exact script used for the experiments can be viewed in `run_renderX.sh`.
 Again, we utilize slightly different scripts for rendering all mature policies for different hyperparameter sets across multiple machines.
 
+### Debugging Environments
+
+When using a custom environment, it is possible to debug these environments using MCMES.
+During training, all policies are saved in `./optimization_policies/`, the behaviours for these mid-training policies can be rendered using
+
+```sh
+python3 render_optimization_policies.py
+```
+
+All rendered policies are then saved in `./optimization_gifs/`.
