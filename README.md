@@ -25,7 +25,7 @@ python3 best_hyperparameters.py --study-name STUDY_NAME --storage mysql://root:d
 
 The script used for the experiments can be viewed in `run_best_hyperparameters.sh`
 
-### Pruning Weights According to Performance
+### Pruning Hyperparameters According to Performance
 
 For all the policies obtained from the optimization runs, we define a "mature policy" as a policy wherein the evaluation score in the environment is more than a certain threshold.
 The script to save the policies into a folder `./mature_policies/` is
