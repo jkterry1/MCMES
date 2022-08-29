@@ -28,7 +28,7 @@ The script used for the experiments can be viewed in `run_best_hyperparameters.s
 ### Pruning Weights According to Performance
 
 For all the policies obtained from the optimization runs, we define a "mature policy" as a policy wherein the evaluation score in the environment is more than a certain threshold.
-The script to save the policies into a folder `./mature_policies` is
+The script to save the policies into a folder `./mature_policies/` is
 
 ```sh
 python3 eval_hyperparameters.py 0
