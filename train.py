@@ -27,8 +27,12 @@ if __name__ == "__main__":  # noqa: C901
         required=False,
         choices=list(ALGOS.keys()),
     )
-    parser.add_argument("--env", type=str, default="CooperativePong", help="environment ID")
-    parser.add_argument("-tb", "--tensorboard-log", help="Tensorboard log dir", default="", type=str)
+    parser.add_argument(
+        "--env", type=str, default="CooperativePong", help="environment ID"
+    )
+    parser.add_argument(
+        "-tb", "--tensorboard-log", help="Tensorboard log dir", default="", type=str
+    )
     parser.add_argument(
         "-i",
         "--trained-agent",
@@ -99,7 +103,9 @@ if __name__ == "__main__":  # noqa: C901
         action="store_true",
         default=False,
     )
-    parser.add_argument("-f", "--log-folder", help="Log folder", type=str, default="logs")
+    parser.add_argument(
+        "-f", "--log-folder", help="Log folder", type=str, default="logs"
+    )
     parser.add_argument("--seed", help="Random generator seed", type=int, default=-1)
     parser.add_argument(
         "--vec-env",
@@ -171,7 +177,9 @@ if __name__ == "__main__":  # noqa: C901
         type=str,
         default=None,
     )
-    parser.add_argument("--verbose", help="Verbose mode (0: no output, 1: INFO)", default=1, type=int)
+    parser.add_argument(
+        "--verbose", help="Verbose mode (0: no output, 1: INFO)", default=1, type=int
+    )
     parser.add_argument(
         "--gym-packages",
         type=str,
@@ -208,7 +216,9 @@ if __name__ == "__main__":  # noqa: C901
         importlib.import_module(env_module)
 
     env_id = args.env
-    registered_envs = set(gym.envs.registry.env_specs.keys())  # pytype: disable=module-attr
+    registered_envs = set(
+        gym.envs.registry.env_specs.keys()
+    )  # pytype: disable=module-attr
 
     # Unique id to ensure there is no race condition for the folder creation
     uuid_str = f"_{uuid.uuid4()}" if args.uuid else ""

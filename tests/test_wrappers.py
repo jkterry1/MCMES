@@ -4,7 +4,12 @@ import pytest
 from stable_baselines3.common.env_checker import check_env
 
 from utils.utils import get_wrapper_class
-from utils.wrappers import ActionNoiseWrapper, DelayedRewardWrapper, HistoryWrapper, TimeFeatureWrapper
+from utils.wrappers import (
+    ActionNoiseWrapper,
+    DelayedRewardWrapper,
+    HistoryWrapper,
+    TimeFeatureWrapper,
+)
 
 
 def test_wrappers():
