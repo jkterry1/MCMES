@@ -86,3 +86,7 @@ python3 render_optimization_policies.py
 ```
 
 All rendered policies are then saved in `./optimization_gifs/`.
+
+## Bugs and Issues
+
+If you encounter any bugs or issues with running the code, please raise an issue on this github repo.
