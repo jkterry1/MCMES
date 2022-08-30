@@ -2,15 +2,26 @@
 
 This repository and its branches contains code used in the work on XXXX
 
+## Basic Idea
+
+The basic idea of MCMES is as follows:
+
+1. Run a hyperparameter sweep for a reinforcement learning algorithm.
+2. Select top `n` best sets of hyperparameters.
+3. Train `m` policies using the reinforcement learning algorithm for each set of hyperparameters.
+4. Observe behaviours that emerge from all `n`x`m` trained policies.
+
 ## Using This Repository
 
-### Basic Optimization Run
+### Run hyperparameter sweep
 
 To perform an MCMES run on a distributed system, provide the direction to an SQL server directory via the `--storage` argument. An example would be:
 
 ```sh
 python3 train.py --algo ppo -n 2000000 --optimization-log-path optimization_policies -optimize --study-name STUDY_NAME --storage mysql://root:dummy@99.999.9.99/study_name
 ```
+
+If running locally, it suffices to drop the `--storage` argument, in this case, all runs will be saved locally.
 
 The experiments conducted in the paper utilize a small number of additional parameters for logging and noise sampling.
 These parameters can be viewed in `./run_optimize.sh`.
@@ -27,7 +38,7 @@ The script used for the experiments can be viewed in `run_best_hyperparameters.s
 
 ### Pruning Hyperparameters According to Performance
 
-For all the policies obtained from the optimization runs, we define a "mature policy" as a policy wherein the evaluation score in the environment is more than a certain threshold.
+For all the policies obtained from the optimization runs, we define a "mature policy" as a policy wherein the evaluation score in the environment is more than a certain threshold, the value for this threshold is defined on line 90 of `./eval_hyperparameters.py`.
 The script to save the policies into a folder `./mature_policies/` is
 
 ```sh
