@@ -9,7 +9,7 @@ The basic idea of MCMES is as follows:
 1. Run a hyperparameter sweep for a reinforcement learning algorithm.
 2. Select top `n` best sets of hyperparameters.
 3. Train `m` policies using the reinforcement learning algorithm for each set of hyperparameters.
-4. Observe behaviours that emerge from all `n`x`m` trained policies.
+4. Observe behaviours that emerge from all `n`x`m` trained policies by rendering out an episode from all the policies.
 
 ## Using This Repository
 
