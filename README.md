@@ -2,6 +2,10 @@
 
 This repository and its branches contains code used in the work on XXXX
 
+## Bugs and Issues
+
+If you encounter any bugs or issues with running the code, please create an issue on this github repo or email the authors of the paper. Having these code be useful to future researchers is something the authors meaningfully care about.
+
 ## Basic Idea
 
 The basic idea of MCMES is as follows:
@@ -12,6 +16,10 @@ The basic idea of MCMES is as follows:
 4. Observe behaviours that emerge from all `n`x`m` trained policies by rendering out an episode from all the policies.
 
 ## Using This Repository
+
+This code is a lightly modified (and now slightly old) fork of https://github.com/DLR-RM/rl-baselines3-zoo, a simple library that performs hyperparameter tuning for RL learning algorithms found in https://github.com/DLR-RM/stable-baselines3, a popular and easy-to-use learning library. This repository modifies master by hooking in to PettingZoo environments via parameter sharing, using a method described in [this](https://towardsdatascience.com/multi-agent-deep-reinforcement-learning-in-15-lines-of-code-using-pettingzoo-e0b963c0820b?gi=551aecde2d6f) tutorial, and adds a few small additional utilities for performing MCMES.
+
+Alternate PettingZoo environments could be easily dropped into one of the branches, or the changes to our code could be fairly easily ported to the newest version of RL-Baselines3-Zoo without too much work should researchers wish to apply these methods to new environments.
 
 ### Run hyperparameter sweep
 
@@ -78,16 +86,10 @@ The arguments used here are similar to those defined [previously](#run-hyperpara
 
 ### Debugging Environments
 
-When using a custom environment, it is possible to debug these environments using MCMES.
-Debugging in this sense is the equivalent of finding ways in which policies can break or cause unintended behaviours.
-During training, all policies are saved in `./optimization_policies/`, the behaviours for these mid-training policies can be rendered using
+When applying MCMES to a new environment, it's often useful to see what initial behaviors were found during hyperparameter training to ensure no bugs were discovered in the environments (this is quite common in our experience), before completing the full MCMES search. To this end, during tuning, all the best policies for each run are saved in `./optimization_policies/`, and all saved policies can have gifs/videos generated using:
 
 ```sh
 python3 render_optimization_policies.py
 ```
 
 All rendered policies are then saved in `./optimization_gifs/`.
-
-## Bugs and Issues
-
-If you encounter any bugs or issues with running the code, please raise an issue on this github repo.
