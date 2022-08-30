@@ -79,6 +79,7 @@ The arguments used here are similar to those defined [previously](#run-hyperpara
 ### Debugging Environments
 
 When using a custom environment, it is possible to debug these environments using MCMES.
+Debugging in this sense is the equivalent of finding ways in which policies can break or cause unintended behaviours.
 During training, all policies are saved in `./optimization_policies/`, the behaviours for these mid-training policies can be rendered using
 
 ```sh
