@@ -28,7 +28,9 @@ def _timestep_to_observations(timestep: dm_env.TimeStep):
 
 
 def _remove_world_observations_from_space(observation: spaces.Dict) -> spaces.Dict:
-    return spaces.Dict({key: observation[key] for key in observation if "WORLD" not in key})
+    return spaces.Dict(
+        {key: observation[key] for key in observation if "WORLD" not in key}
+    )
 
 
 def _spec_to_space(spec: tree.Structure[dm_env.specs.Array]) -> spaces.Space:
@@ -86,9 +88,15 @@ class MeltingPotPettingZooEnv(ParallelEnv):
         self.max_cycles = max_cycles
         self._env = substrate.build(self.env_config)
         self._num_players = len(self._env.observation_spec())
-        self.possible_agents = [PLAYER_STR_FORMAT.format(index=index) for index in range(self._num_players)]
-        observation_space = _remove_world_observations_from_space(_spec_to_space(self._env.observation_spec()[0]))
-        self.observation_space = lru_cache(maxsize=None)(lambda agent_id: observation_space)
+        self.possible_agents = [
+            PLAYER_STR_FORMAT.format(index=index) for index in range(self._num_players)
+        ]
+        observation_space = _remove_world_observations_from_space(
+            _spec_to_space(self._env.observation_spec()[0])
+        )
+        self.observation_space = lru_cache(maxsize=None)(
+            lambda agent_id: observation_space
+        )
         action_space = _spec_to_space(self._env.action_spec()[0])
         self.action_space = lru_cache(maxsize=None)(lambda agent_id: action_space)
         self.state_space = _spec_to_space(self._env.observation_spec()[0]["WORLD.RGB"])
@@ -107,7 +115,9 @@ class MeltingPotPettingZooEnv(ParallelEnv):
         """See base class."""
         actions = [action[agent] for agent in self.agents]
         timestep = self._env.step(actions)
-        rewards = {agent: timestep.reward[index] for index, agent in enumerate(self.agents)}
+        rewards = {
+            agent: timestep.reward[index] for index, agent in enumerate(self.agents)
+        }
         self.num_cycles += 1
         done = timestep.last() or self.num_cycles >= self.max_cycles
         dones = {agent: done for agent in self.agents}

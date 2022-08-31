@@ -50,9 +50,13 @@ class CustomCNN(BaseFeaturesExtractor):
         # Re-ordering will be done by pre-preprocessing or wrapper
 
         self.conv = nn.Sequential(
-            nn.Conv2d(num_frames * 3, num_frames * 6, kernel_size=8, stride=4, padding=0),
+            nn.Conv2d(
+                num_frames * 3, num_frames * 6, kernel_size=8, stride=4, padding=0
+            ),
             activation_fn(),  # 24 * 21 * 21
-            nn.Conv2d(num_frames * 6, num_frames * 12, kernel_size=5, stride=2, padding=0),
+            nn.Conv2d(
+                num_frames * 6, num_frames * 12, kernel_size=5, stride=2, padding=0
+            ),
             activation_fn(),  # 48 * 9 * 9
             nn.Flatten(),
         )
@@ -70,7 +74,12 @@ class CustomCNN(BaseFeaturesExtractor):
         return features
 
 
-activation_fn = {"tanh": nn.Tanh, "relu": nn.ReLU, "elu": nn.ELU, "leaky_relu": nn.LeakyReLU}[params["activation_fn"]]
+activation_fn = {
+    "tanh": nn.Tanh,
+    "relu": nn.ReLU,
+    "elu": nn.ELU,
+    "leaky_relu": nn.LeakyReLU,
+}[params["activation_fn"]]
 net_arch = {
     "small": [dict(pi=[32, 32], vf=[32, 32])],
     "medium": [dict(pi=[128, 64], vf=[128, 64])],
@@ -91,7 +100,9 @@ env = meltingpot_env.parallel_env(env_config=env_config)
 env = ss.observation_lambda_v0(env, lambda x, _: x["RGB"], lambda s: s["RGB"])
 env = ss.frame_stack_v1(env, num_frames)
 env = ss.pettingzoo_env_to_vec_env_v1(env)
-env = ss.concat_vec_envs_v1(env, n_envs, num_cpus=n_cpus, base_class="stable_baselines3")
+env = ss.concat_vec_envs_v1(
+    env, n_envs, num_cpus=n_cpus, base_class="stable_baselines3"
+)
 env = VecTransposeImage(env, skip=True)
 env = VecMonitor(env)
 
@@ -99,7 +110,9 @@ eval_env = meltingpot_env.parallel_env(env_config=env_config)
 eval_env = ss.observation_lambda_v0(eval_env, lambda x, _: x["RGB"], lambda s: s["RGB"])
 eval_env = ss.frame_stack_v1(eval_env, num_frames)
 eval_env = ss.pettingzoo_env_to_vec_env_v1(eval_env)
-eval_env = ss.concat_vec_envs_v1(eval_env, 1, num_cpus=n_cpus, base_class="stable_baselines3")
+eval_env = ss.concat_vec_envs_v1(
+    eval_env, 1, num_cpus=n_cpus, base_class="stable_baselines3"
+)
 eval_env = VecTransposeImage(eval_env, skip=True)
 eval_env = VecMonitor(eval_env)
 
@@ -109,7 +122,7 @@ eval_freq = max(eval_freq // (n_envs * n_agents), 1)
 all_mean_rewards = []
 
 for i in range(10):
-    try: 
+    try:
         model = PPO("CnnPolicy", env, verbose=1, **params)
         eval_callback = EvalCallback(
             eval_env,
@@ -121,12 +134,22 @@ for i in range(10):
         )
         model.learn(total_timesteps=n_timesteps, callback=eval_callback)
         model = PPO.load("./eval_logs/" + num + "/" + str(i) + "/" + "best_model")
-        mean_reward, std_reward = evaluate_policy(model, eval_env, deterministic=False, n_eval_episodes=25)
+        mean_reward, std_reward = evaluate_policy(
+            model, eval_env, deterministic=False, n_eval_episodes=25
+        )
         print(mean_reward)
         print(std_reward)
         all_mean_rewards.append(mean_reward)
         if mean_reward > 40:
-            model.save("./mature_policies/" + str(num) + "/" + str(i) + "_" + str(mean_reward).split(".")[0] + ".zip")
+            model.save(
+                "./mature_policies/"
+                + str(num)
+                + "/"
+                + str(i)
+                + "_"
+                + str(mean_reward).split(".")[0]
+                + ".zip"
+            )
     except:
         print("Error occurred during evaluation")
 

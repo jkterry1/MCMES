@@ -36,7 +36,11 @@ for policy in policies:
         while True:
             for agent in env.agent_iter():
                 observation, reward, done, _ = env.last()
-                action = model.predict(observation, deterministic=False)[0] if not done else None
+                action = (
+                    model.predict(observation, deterministic=False)[0]
+                    if not done
+                    else None
+                )
                 total_reward += reward
 
                 env.step(action)
@@ -52,7 +56,16 @@ for policy in policies:
         if total_reward > 40:
             print("writing gif")
             write_gif(
-                obs_list, "./mature_gifs/" + num + "_" + policy.split("_")[0] + j + "_" + str(total_reward)[:5] + ".gif", fps=5
+                obs_list,
+                "./mature_gifs/"
+                + num
+                + "_"
+                + policy.split("_")[0]
+                + j
+                + "_"
+                + str(total_reward)[:5]
+                + ".gif",
+                fps=5,
             )
 
 env.close()
