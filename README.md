@@ -4,7 +4,7 @@ This repository and its branches contains code used in the work on XXXX
 
 ## Installation
 
-This branch depends on an installation of [SUMO-RL](https://github.com/LucasAlegre/sumo-rl).
+In addition to the packages in `./requirements.txt`, this branch depends on an installation of [SUMO-RL](https://github.com/LucasAlegre/sumo-rl).
 
 ## Bugs and Issues
 
