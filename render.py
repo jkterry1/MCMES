@@ -15,7 +15,9 @@ RESOLUTION = (7000, 7000)  # required for cars to be visible
 
 n_agents = 21
 
-env = sumo_rl.ingolstadt21(sumo_warnings=False, virtual_display=RESOLUTION, use_gui=True)
+env = sumo_rl.ingolstadt21(
+    sumo_warnings=False, virtual_display=RESOLUTION, use_gui=True
+)
 env = from_parallel(env)
 env = ss.pad_observations_v0(env)
 env = ss.pad_action_space_v0(env)
@@ -38,7 +40,9 @@ for policy in policies:
 
         for agent in env.agent_iter():
             observation, reward, done, _ = env.last()
-            action = model.predict(observation, deterministic=True)[0] if not done else None
+            action = (
+                model.predict(observation, deterministic=True)[0] if not done else None
+            )
             total_reward += reward
 
             env.step(action)
@@ -52,8 +56,19 @@ for policy in policies:
 
         if total_reward > -0.2:
             print("Rendering frames")
-            name = "./mature_gifs/" + num + "_" + policy.split("_")[0] + j + "_" + str(total_reward)[:5] + ".mp4"
-            subprocess.run(["ffmpeg", "-y", "-framerate", "5", "-i", cache + "%d.png", name])
+            name = (
+                "./mature_gifs/"
+                + num
+                + "_"
+                + policy.split("_")[0]
+                + j
+                + "_"
+                + str(total_reward)[:5]
+                + ".mp4"
+            )
+            subprocess.run(
+                ["ffmpeg", "-y", "-framerate", "5", "-i", cache + "%d.png", name]
+            )
 
         # clear scratch directory
         for file in os.scandir(cache):
