@@ -256,7 +256,7 @@ class ExperimentManager(object):
         # Load hyperparameters from yaml file
         with open(f"hyperparams/{self.algo}.yml", "r") as f:
             hyperparams_dict = yaml.safe_load(f)
-            hyperparams = hyperparams_dict["LunarLanderContinuous-v2"]
+            hyperparams = hyperparams_dict["LunarLander-v2"]
 
         if self.custom_hyperparams is not None:
             # Overwrite hyperparams if needed
