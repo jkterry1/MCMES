@@ -156,30 +156,36 @@ class ExperimentManager(object):
 
         :return: the initialized RL model
         """
+        hyperparams, saved_hyperparams = self.read_hyperparameters()
+        hyperparams, self.env_wrapper, self.callbacks = self._preprocess_hyperparams(
+            hyperparams
+        )
+
         self.create_log_folder()
         self.create_callbacks()
 
         # Create env to have access to action space for action noise
         env = self.create_envs(self.n_envs, no_log=False)
 
+        self._hyperparams = self._preprocess_action_noise(
+            hyperparams, saved_hyperparams, env
+        )
+
         if self.continue_training:
             model = self._load_pretrained_agent(self._hyperparams, env)
-            print("a")
         elif self.optimize_hyperparameters:
-            print("b")
             return None
         else:
             # Train an agent from scratch
-            print("c")
             model = ALGOS[self.algo](
                 env=env,
                 tensorboard_log=self.tensorboard_log,
                 seed=self.seed,
                 verbose=self.verbose,
-                policy="MlpPolicy",
                 **self._hyperparams,
             )
 
+        self._save_config(saved_hyperparams)
         return model
 
     def learn(self, model: BaseAlgorithm) -> None:
@@ -224,6 +230,28 @@ class ExperimentManager(object):
             model.get_vec_normalize_env().save(
                 os.path.join(self.params_path, "vecnormalize.pkl")
             )
+
+    def read_hyperparameters(self) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+        # Load hyperparameters from yaml file
+        with open(f"hyperparams/{self.algo}.yml", "r") as f:
+            hyperparams_dict = yaml.safe_load(f)
+            hyperparams = hyperparams_dict["CartPole-v1"]
+
+        if self.custom_hyperparams is not None:
+            # Overwrite hyperparams if needed
+            hyperparams.update(self.custom_hyperparams)
+        # Sort hyperparams that will be saved
+        saved_hyperparams = OrderedDict(
+            [(key, hyperparams[key]) for key in sorted(hyperparams.keys())]
+        )
+
+        if self.verbose > 0:
+            print(
+                "Default hyperparameters for environment (ones being tuned will be overridden):"
+            )
+            pprint(saved_hyperparams)
+
+        return hyperparams, saved_hyperparams
 
     def _save_config(self, saved_hyperparams: Dict[str, Any]) -> None:
         """
