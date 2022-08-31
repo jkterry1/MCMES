@@ -38,7 +38,9 @@ for policy in policies:
 
         for agent in env.agent_iter():
             observation, reward, done, _ = env.last()
-            action = model.predict(observation, deterministic=True)[0] if not done else None
+            action = (
+                model.predict(observation, deterministic=True)[0] if not done else None
+            )
             total_reward += reward
 
             env.step(action)
@@ -52,8 +54,19 @@ for policy in policies:
 
         if total_reward > -0.1:
             print("Rendering frames")
-            name = "./mature_gifs/" + num + "_" + policy.split("_")[0] + j + "_" + str(total_reward)[:5] + ".mp4"
-            subprocess.run(["ffmpeg", "-y", "-framerate", "5", "-i", cache + "%d.jpg", name])
+            name = (
+                "./mature_gifs/"
+                + num
+                + "_"
+                + policy.split("_")[0]
+                + j
+                + "_"
+                + str(total_reward)[:5]
+                + ".mp4"
+            )
+            subprocess.run(
+                ["ffmpeg", "-y", "-framerate", "5", "-i", cache + "%d.jpg", name]
+            )
 
         # clear scratch directory
         for file in os.scandir(cache):
