@@ -119,7 +119,7 @@ class ExperimentManager(object):
         )
         self.truncate_last_trajectory = truncate_last_trajectory
 
-        self._is_atari = self.is_atari(env_id)
+        self._is_atari = False
         # Hyperparameter optimization config
         self.optimize_hyperparameters = optimize_hyperparameters
         self.storage = storage
@@ -258,14 +258,7 @@ class ExperimentManager(object):
         # Load hyperparameters from yaml file
         with open(f"hyperparams/{self.algo}.yml", "r") as f:
             hyperparams_dict = yaml.safe_load(f)
-            if self.env_id in list(hyperparams_dict.keys()):
-                hyperparams = hyperparams_dict[self.env_id]
-            elif self._is_atari:
-                hyperparams = hyperparams_dict["atari"]
-            else:
-                raise ValueError(
-                    f"Hyperparameters not found for {self.algo}-{self.env_id}"
-                )
+            hyperparams = hyperparams_dict["LunarLander-v2"]
 
         if self.custom_hyperparams is not None:
             # Overwrite hyperparams if needed
@@ -454,19 +447,6 @@ class ExperimentManager(object):
             )
 
             self.callbacks.append(eval_callback)
-
-    @staticmethod
-    def is_atari(env_id: str) -> bool:
-        return "AtariEnv" in gym.envs.registry.env_specs[env_id].entry_point
-
-    @staticmethod
-    def is_bullet(env_id: str) -> bool:
-        return "pybullet_envs" in gym.envs.registry.env_specs[env_id].entry_point
-
-    @staticmethod
-    def is_robotics_env(env_id: str) -> bool:
-        entry_point = gym.envs.registry.env_specs[env_id].entry_point
-        return "gym.envs.robotics" in entry_point or "panda_gym.envs" in entry_point
 
     def _maybe_normalize(self, env: VecEnv, eval_env: bool) -> VecEnv:
         """
