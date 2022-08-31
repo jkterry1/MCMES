@@ -327,7 +327,7 @@ class ExperimentManager(object):
     def _preprocess_hyperparams(
         self, hyperparams: Dict[str, Any]
     ) -> Tuple[Dict[str, Any], Optional[Callable], List[BaseCallback]]:
-        self.n_envs = 4
+        self.n_envs = 2
 
         if self.verbose > 0:
             print(f"Using {self.n_envs} environments")
