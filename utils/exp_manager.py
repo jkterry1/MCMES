@@ -10,7 +10,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 import gym
 import numpy as np
 import optuna
-import pettingzoo.butterfly.cooperative_pong_v4 as cooperative_pong_v4
+import pettingzoo.butterfly.cooperative_pong_v5 as cooperative_pong_v5
 import supersuit as ss
 import yaml
 from optuna.integration.skopt import SkoptSampler
@@ -468,7 +468,7 @@ class ExperimentManager(object):
         self, n_envs: int, eval_env: bool = False, no_log: bool = False
     ) -> VecEnv:
 
-        env = cooperative_pong_v4.parallel_env()
+        env = cooperative_pong_v5.parallel_env()
         env = ss.color_reduction_v0(env, mode="B")
         env = ss.resize_v1(env, x_size=84, y_size=84, linear_interp=True)
         env = ss.frame_stack_v1(env, 3)
