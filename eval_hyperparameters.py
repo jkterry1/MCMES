@@ -28,17 +28,26 @@ net_arch = {
     "large": [dict(pi=[400, 300], vf=[400, 300])],
     "extra_large": [dict(pi=[750, 750, 500], vf=[750, 750, 500])],
 }[params["net_arch"]]
-activation_fn = {"tanh": nn.Tanh, "relu": nn.ReLU, "elu": nn.ELU, "leaky_relu": nn.LeakyReLU}[params["activation_fn"]]
+activation_fn = {
+    "tanh": nn.Tanh,
+    "relu": nn.ReLU,
+    "elu": nn.ELU,
+    "leaky_relu": nn.LeakyReLU,
+}[params["activation_fn"]]
 ortho_init = False
 
-params["policy_kwargs"] = dict(net_arch=net_arch, activation_fn=activation_fn, ortho_init=ortho_init)
+params["policy_kwargs"] = dict(
+    net_arch=net_arch, activation_fn=activation_fn, ortho_init=ortho_init
+)
 
 del params["net_arch"]
 del params["activation_fn"]
 
 
 def image_transpose(env):
-    if is_image_space(env.observation_space) and not is_image_space_channels_first(env.observation_space):
+    if is_image_space(env.observation_space) and not is_image_space_channels_first(
+        env.observation_space
+    ):
         env = VecTransposeImage(env)
     return env
 
@@ -53,7 +62,9 @@ env = image_transpose(env)
 eval_env = pursuit_v4.parallel_env()
 eval_env = ss.flatten_v0(eval_env)
 eval_env = ss.pettingzoo_env_to_vec_env_v1(eval_env)
-eval_env = ss.concat_vec_envs_v1(eval_env, 1, num_cpus=1, base_class="stable_baselines3")
+eval_env = ss.concat_vec_envs_v1(
+    eval_env, 1, num_cpus=1, base_class="stable_baselines3"
+)
 eval_env = VecMonitor(eval_env)
 eval_env = image_transpose(eval_env)
 
@@ -74,12 +85,22 @@ for i in range(10):
         )
         model.learn(total_timesteps=n_timesteps, callback=eval_callback)
         model = PPO.load("./eval_logs/" + num + "/" + str(i) + "/" + "best_model")
-        mean_reward, std_reward = evaluate_policy(model, eval_env, deterministic=False, n_eval_episodes=25)
+        mean_reward, std_reward = evaluate_policy(
+            model, eval_env, deterministic=False, n_eval_episodes=25
+        )
         print(mean_reward)
         print(std_reward)
         all_mean_rewards.append(mean_reward)
         if mean_reward > 50:
-            model.save("./mature_policies/" + str(num) + "/" + str(i) + "_" + str(mean_reward).split(".")[0] + ".zip")
+            model.save(
+                "./mature_policies/"
+                + str(num)
+                + "/"
+                + str(i)
+                + "_"
+                + str(mean_reward).split(".")[0]
+                + ".zip"
+            )
     except:
         print("error")
 
