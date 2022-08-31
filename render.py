@@ -32,7 +32,11 @@ for policy in policies:
         while True:
             for agent in env.agent_iter():
                 observation, reward, done, _ = env.last()
-                action = model.predict(observation, deterministic=True)[0] if not done else None
+                action = (
+                    model.predict(observation, deterministic=True)[0]
+                    if not done
+                    else None
+                )
                 total_reward += reward
 
                 env.step(action)
@@ -48,7 +52,14 @@ for policy in policies:
             print("writing gif")
 
             video_log[0].save(
-                "./mature_gifs/" + num + "_" + policy.split("_")[0] + j + "_" + str(total_reward)[:5] + ".gif",
+                "./mature_gifs/"
+                + num
+                + "_"
+                + policy.split("_")[0]
+                + j
+                + "_"
+                + str(total_reward)[:5]
+                + ".gif",
                 save_all=True,
                 append_images=video_log[1:],
                 optimize=False,
