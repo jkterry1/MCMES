@@ -257,14 +257,7 @@ class ExperimentManager(object):
         # Load hyperparameters from yaml file
         with open(f"hyperparams/{self.algo}.yml", "r") as f:
             hyperparams_dict = yaml.safe_load(f)
-            if self.env_id in list(hyperparams_dict.keys()):
-                hyperparams = hyperparams_dict[self.env_id]
-            elif self._is_atari:
-                hyperparams = hyperparams_dict["atari"]
-            else:
-                raise ValueError(
-                    f"Hyperparameters not found for {self.algo}-{self.env_id}"
-                )
+            hyperparams = hyperparams_dict["LunarLander-v2"]
 
         if self.custom_hyperparams is not None:
             # Overwrite hyperparams if needed
