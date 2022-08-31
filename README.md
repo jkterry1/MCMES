@@ -2,6 +2,11 @@
 
 This repository and its branches contains code used in the work on XXXX
 
+## Installation
+
+This branch depends on an installation of [MeltingPot](https://github.com/deepmind/meltingpot).
+Currently, only Ubuntu 20.04 is supported.
+
 ## Bugs and Issues
 
 If you encounter any bugs or issues with running the code, please create an issue on this github repo or email the authors of the paper. Having these code be useful to future researchers is something the authors meaningfully care about.
