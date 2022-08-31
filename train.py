@@ -27,7 +27,9 @@ if __name__ == "__main__":  # noqa: C901
         required=False,
         choices=list(ALGOS.keys()),
     )
-    parser.add_argument("--env", type=str, default="pistonball_v6", help="environment ID")
+    parser.add_argument(
+        "--env", type=str, default="pistonball_v6", help="environment ID"
+    )
     parser.add_argument(
         "-tb", "--tensorboard-log", help="Tensorboard log dir", default="", type=str
     )
