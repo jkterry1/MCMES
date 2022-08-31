@@ -15,7 +15,7 @@ The following branches specifically were used:
 - `Pistonball_PPO_Short`
 - `Pursuit`
 
-> * these branches require manual installation of third party libraries that is not in the `requirements.txt` file
+> *these branches require manual installation of third party libraries that is not in the `requirements.txt` file
 
 ## Basic Idea
 
