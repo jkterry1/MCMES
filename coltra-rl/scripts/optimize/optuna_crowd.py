@@ -154,7 +154,6 @@ def objective(trial: optuna.trial.BaseTrial, idx: Optional[int], worker_id: int,
 
     wandb.init(
         project="mcmes-retraining",
-        entity="redtachyon",
         sync_tensorboard=True,
         config=config,
         name=f"trial{trial.number}-{idx if idx is not None else ''}",
